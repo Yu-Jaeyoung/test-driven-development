@@ -1,0 +1,12 @@
+###
+POST http://localhost:3000/seller/signUp
+Content-Type: application/json
+
+{
+  "email": "seller1@example.com",
+  "username": "seller1",
+  "password": "seller1-password",
+  "contactEmail": "contact1@example.com"
+}
+
+###
