@@ -1,4 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
+import { SellerSignUpController } from "@/commerce/api/controller/seller-sign-up.controller";
 
-@Module({})
-export class AppModule {}
+@Module({
+  controllers: [
+    SellerSignUpController,
+  ],
+})
+export class AppModule {
+}
