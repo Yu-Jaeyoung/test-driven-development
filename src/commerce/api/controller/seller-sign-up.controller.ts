@@ -15,6 +15,7 @@ export class SellerSignUpController {
   ) {
 
     const emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    const usernameRegx: RegExp = /^[a-z]*$/;
 
     if (command.email === undefined) {
       return res.status(HttpStatus.BAD_REQUEST)
@@ -26,6 +27,15 @@ export class SellerSignUpController {
       return res.status(HttpStatus.BAD_REQUEST)
                 .send();
     } else if (command.email.match(emailRegex) === null) {
+      return res.status(HttpStatus.BAD_REQUEST)
+                .send();
+    } else if (command.username === undefined) {
+      return res.status(HttpStatus.BAD_REQUEST)
+                .send();
+    } else if (command.username.length < 3) {
+      return res.status(HttpStatus.BAD_REQUEST)
+                .send();
+    } else if (command.username.match(usernameRegx) === null) {
       return res.status(HttpStatus.BAD_REQUEST)
                 .send();
     } else {
