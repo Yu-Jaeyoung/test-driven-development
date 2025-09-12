@@ -10,8 +10,9 @@ describe("POST /seller/signUp", () => {
 
   beforeEach(async() => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+                                                     imports: [ AppModule ],
+                                                   })
+                                                   .compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
@@ -39,6 +40,30 @@ describe("POST /seller/signUp", () => {
     // Arrange
     const command: CreateSellerCommand = {
       email: undefined,
+      username: "seller",
+      password: "password",
+    };
+
+    // Act
+    const response = await request(app.getHttpServer())
+      .post("/seller/signUp")
+      .send(command);
+
+    // Assert
+    expect(response.status)
+      .toBe(400);
+  });
+
+  it.each([
+    "invalid-email",
+    "invalid-email@",
+    "invalid-email@test",
+    "invalid-email@test.",
+    "invalid-email@.com",
+  ])("email_속성이_올바른_형식을_따르지_않으면_400_Bad_Request_상태코드를_반환한다", async(email: string) => {
+    // Arrange
+    const command: CreateSellerCommand = {
+      email,
       username: "seller",
       password: "password",
     };
