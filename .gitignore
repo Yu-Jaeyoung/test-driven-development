@@ -7,5 +7,6 @@ node_modules/
 [._]sw[a-p]
 
 .idea
+.env
 
 package-lock.json

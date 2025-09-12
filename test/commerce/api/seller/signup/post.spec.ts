@@ -1,4 +1,4 @@
-import { describe, beforeEach, it, expect } from "bun:test";
+import { beforeAll, describe, expect, it } from "bun:test";
 import { Test, TestingModule } from "@nestjs/testing";
 import type { INestApplication } from "@nestjs/common";
 import request from "supertest";
@@ -8,7 +8,7 @@ import { CreateSellerCommand } from "@/commerce/command/create-seller-command";
 describe("POST /seller/signUp", () => {
   let app: INestApplication;
 
-  beforeEach(async() => {
+  beforeAll(async() => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
                                                      imports: [ AppModule ],
                                                    })
@@ -184,4 +184,31 @@ describe("POST /seller/signUp", () => {
     expect(response.status)
       .toBe(400);
   });
-});
+
+  it("email_속성에_이미_존재하는_이메일_주소가_지정되면_400_Bad_Request_상태코드를_반환한다", async() => {
+    // Arrange
+    const email = "seller@test.com";
+
+    // Act
+    await request(app.getHttpServer())
+      .post("/seller/signUp")
+      .send({
+        email,
+        username: "seller",
+        password: "password",
+      });
+
+    const response = await request(app.getHttpServer())
+      .post("/seller/signUp")
+      .send({
+        email,
+        username: "seller",
+        password: "password",
+      });
+
+    // Assert
+    expect(response.status)
+      .toBe(400);
+  });
+})
+;
