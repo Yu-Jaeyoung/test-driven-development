@@ -1,5 +1,5 @@
 export interface CreateSellerCommand {
   email?: string;
   username?: string;
-  password: string;
+  password?: string;
 }

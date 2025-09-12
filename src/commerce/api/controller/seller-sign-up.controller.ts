@@ -38,6 +38,12 @@ export class SellerSignUpController {
     } else if (command.username.match(usernameRegx) === null) {
       return res.status(HttpStatus.BAD_REQUEST)
                 .send();
+    } else if (command.password === undefined) {
+      return res.status(HttpStatus.BAD_REQUEST)
+                .send();
+    } else if (command.password.length < 8) {
+      return res.status(HttpStatus.BAD_REQUEST)
+                .send();
     } else {
       return res.status(HttpStatus.NO_CONTENT)
                 .send();

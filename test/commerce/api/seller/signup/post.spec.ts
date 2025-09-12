@@ -144,4 +144,44 @@ describe("POST /seller/signUp", () => {
     expect(response.status)
       .toBe(204);
   });
+
+  it("password_속성이_지정되지_않으면_400_Bad_Request_상태코드를_반환한다", async() => {
+    // Arrange
+    const command: CreateSellerCommand = {
+      email: "seller@test.com",
+      username: "seller",
+      password: undefined,
+    };
+
+    // Act
+    const response = await request(app.getHttpServer())
+      .post("/seller/signUp")
+      .send(command);
+
+    // Assert
+    expect(response.status)
+      .toBe(400);
+  });
+
+  it.each([
+    "",
+    "pass",
+    "pass123",
+  ])("password_속성이_올바른_형식을_따르지_않으면_400_Bad_Request_상태코드를_반환한다", async(password: string) => {
+    // Arrange
+    const command: CreateSellerCommand = {
+      email: "seller@test.com",
+      username: "seller",
+      password,
+    };
+
+    // Act
+    const response = await request(app.getHttpServer())
+      .post("/seller/signUp")
+      .send(command);
+
+    // Assert
+    expect(response.status)
+      .toBe(400);
+  });
 });
