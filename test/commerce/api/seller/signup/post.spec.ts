@@ -19,7 +19,7 @@ describe("POST /seller/signUp", () => {
 
   it("올바르게_요청하면_204_No_Content_상태코드를_반환한다", async() => {
     // Arrange
-    const sellerSignUpDto: CreateSellerCommand = {
+    const command: CreateSellerCommand = {
       email: "seller@test.com",
       username: "seller",
       password: "password",
@@ -28,10 +28,28 @@ describe("POST /seller/signUp", () => {
     // Act
     const response = await request(app.getHttpServer())
       .post("/seller/signUp")
-      .send(sellerSignUpDto);
+      .send(command);
 
     // Assert
     expect(response.status)
       .toBe(204);
+  });
+
+  it("email_속성이_지정되지_않으면_400_Bad_Request_상태코드를_반환한다", async() => {
+    // Arrange
+    const command: CreateSellerCommand = {
+      email: undefined,
+      username: "seller",
+      password: "password",
+    };
+
+    // Act
+    const response = await request(app.getHttpServer())
+      .post("/seller/signUp")
+      .send(command);
+
+    // Assert
+    expect(response.status)
+      .toBe(400);
   });
 });
