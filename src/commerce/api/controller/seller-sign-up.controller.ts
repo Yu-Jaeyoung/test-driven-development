@@ -15,7 +15,7 @@ export class SellerSignUpController {
   ) {
 
     const emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    const usernameRegx: RegExp = /^[a-z]*$/;
+    const usernameRegx: RegExp = /^[a-zA-Z0-9_-]*$/;
 
     if (command.email === undefined) {
       return res.status(HttpStatus.BAD_REQUEST)

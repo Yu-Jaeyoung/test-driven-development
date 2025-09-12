@@ -120,4 +120,28 @@ describe("POST /seller/signUp", () => {
     expect(response.status)
       .toBe(400);
   });
+
+  it.each([
+    "seller",
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    "0123456789",
+    "seller_",
+    "seller-",
+  ])("username_속성이_올바른_형식을_따르면_204_No_Content_상태코드를_반환한다", async(username: string) => {
+    // Arrange
+    const command: CreateSellerCommand = {
+      email: "seller@test.com",
+      username,
+      password: "password",
+    };
+
+    // Act
+    const response = await request(app.getHttpServer())
+      .post("/seller/signUp")
+      .send(command);
+
+    // Assert
+    expect(response.status)
+      .toBe(204);
+  });
 });
