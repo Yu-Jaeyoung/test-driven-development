@@ -6,14 +6,23 @@ import { EmailGenerator } from "../../../email-generator";
 import { UsernameGenerator } from "../../../username-generator";
 import { PasswordGenerator } from "../../../password-generator";
 import { AppModule } from "@/app.module";
-import { CreateSellerCommand } from "@/commerce/command/create-seller-command";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { Seller } from "@/commerce/seller";
+import { Repository } from "typeorm";
 
 const { generateEmail } = EmailGenerator;
 const { generateUsername } = UsernameGenerator;
 const { generatePassword } = PasswordGenerator;
 
+interface CreateSellerCommand {
+  email?: string;
+  username?: string;
+  password?: string;
+}
+
 describe("POST /seller/signUp", () => {
   let app: INestApplication;
+  let sellerRepository: Repository<Seller>;
 
   beforeAll(async() => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -22,6 +31,7 @@ describe("POST /seller/signUp", () => {
                                                    .compile();
 
     app = moduleFixture.createNestApplication();
+    sellerRepository = moduleFixture.get(getRepositoryToken(Seller));
     await app.init();
   });
 
@@ -242,5 +252,28 @@ describe("POST /seller/signUp", () => {
     // Assert
     expect(response.status)
       .toBe(400);
+  });
+
+
+  it("비밀번호를_올바르게_암호화한다", async() => {
+
+    // Arrange
+    const command: CreateSellerCommand = {
+      email: generateEmail(),
+      username: generateUsername(),
+      password: generatePassword(),
+    };
+
+    // Act
+    await request(app.getHttpServer())
+      .post("/seller/signUp")
+      .send(command);
+
+    // Assert
+    const seller = await sellerRepository.findOneBy({ email: command.email! });
+    const isMatch = await Bun.password.verify(command.password!, seller?.hashedPassword!);
+
+    expect(isMatch)
+      .toBe(true);
   });
 });

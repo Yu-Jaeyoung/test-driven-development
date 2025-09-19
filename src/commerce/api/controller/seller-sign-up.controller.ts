@@ -3,7 +3,12 @@ import type { Response } from "express";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Seller } from "@/commerce/seller";
-import { CreateSellerCommand } from "@/commerce/command/create-seller-command";
+
+interface CreateSellerCommand {
+  email?: string;
+  username?: string;
+  password?: string;
+}
 
 export const EMAIL_REGEX: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 export const USER_NAME_REGEX: RegExp = /^[a-zA-Z0-9_-]{3,}$/;
@@ -27,10 +32,15 @@ export class SellerSignUpController {
                 .send();
     }
 
+    const hashedPassword = await Bun.password.hash(command.password!, {
+      algorithm: "bcrypt",
+    });
+
     try {
       await this.sellerRepository.save({
         email: command.email,
         username: command.username,
+        hashedPassword,
       });
     } catch (error) {
 
