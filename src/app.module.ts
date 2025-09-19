@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
-import { SellerSignUpController } from "@/commerce/api/controller/seller-sign-up.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Seller } from "@/commerce/seller";
 import * as process from "node:process";
 import { ConfigModule } from "@nestjs/config";
+import { Seller } from "@/commerce/seller";
+import { SellerSignUpController } from "@/commerce/api/controller/seller-sign-up.controller";
 
 @Module({
   imports: [
@@ -14,6 +14,7 @@ import { ConfigModule } from "@nestjs/config";
       ssl: true,
       entities: [ Seller ],
       synchronize: true,
+      dropSchema: true,
     }),
     TypeOrmModule.forFeature([ Seller ]),
   ],
