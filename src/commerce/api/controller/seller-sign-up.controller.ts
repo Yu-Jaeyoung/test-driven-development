@@ -3,12 +3,7 @@ import type { Response } from "express";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Seller } from "@/commerce/seller";
-
-interface CreateSellerCommand {
-  email?: string;
-  username?: string;
-  password?: string;
-}
+import type { CreateSellerCommand } from "@/commerce/command/create-seller-command";
 
 export const EMAIL_REGEX: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 export const USER_NAME_REGEX: RegExp = /^[a-zA-Z0-9_-]{3,}$/;

@@ -4,6 +4,7 @@ import * as process from "node:process";
 import { ConfigModule } from "@nestjs/config";
 import { Seller } from "@/commerce/seller";
 import { SellerSignUpController } from "@/commerce/api/controller/seller-sign-up.controller";
+import { SellerIssueTokenController } from "@/commerce/api/controller/seller-issue-token.controller";
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { SellerSignUpController } from "@/commerce/api/controller/seller-sign-up
   ],
   controllers: [
     SellerSignUpController,
+    SellerIssueTokenController,
   ],
 })
 export class AppModule {

@@ -9,16 +9,11 @@ import { AppModule } from "@/app.module";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { Seller } from "@/commerce/seller";
 import { Repository } from "typeorm";
+import type { CreateSellerCommand } from "@/commerce/command/create-seller-command";
 
 const { generateEmail } = EmailGenerator;
 const { generateUsername } = UsernameGenerator;
 const { generatePassword } = PasswordGenerator;
-
-interface CreateSellerCommand {
-  email?: string;
-  username?: string;
-  password?: string;
-}
 
 describe("POST /seller/signUp", () => {
   let app: INestApplication;
