@@ -5,6 +5,7 @@ import { ConfigModule } from "@nestjs/config";
 import { Seller } from "@/commerce/seller";
 import { SellerSignUpController } from "@/commerce/api/controller/seller-sign-up.controller";
 import { SellerIssueTokenController } from "@/commerce/api/controller/seller-issue-token.controller";
+import { JwtModule } from "@nestjs/jwt";
 
 @Module({
   imports: [
@@ -18,6 +19,10 @@ import { SellerIssueTokenController } from "@/commerce/api/controller/seller-iss
       dropSchema: true,
     }),
     TypeOrmModule.forFeature([ Seller ]),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+    }),
   ],
   controllers: [
     SellerSignUpController,
