@@ -6,8 +6,8 @@ import request from "supertest";
 import { Test, TestingModule } from "@nestjs/testing";
 import { AppModule } from "@/app.module";
 import type { INestApplication } from "@nestjs/common";
-import { IssueSellerToken } from "@/commerce/query/issue-seller-token";
-import { CreateSellerCommand } from "@/commerce/command/create-seller-command";
+import type { IssueSellerToken } from "@/commerce/query/issue-seller-token";
+import type { CreateSellerCommand } from "@/commerce/command/create-seller-command";
 
 const { generateEmail } = EmailGenerator;
 const { generateUsername } = UsernameGenerator;
@@ -162,5 +162,56 @@ describe("POST /seller/issueToken", () => {
 
         return true;
       });
+  });
+
+  it("존재하지_않는_이메일_주소가_사용되면_400_Bad_Request_상태코드를_반환한다", async() => {
+    // Arrange
+    const email = generateEmail();
+    const password = generatePassword();
+
+    const token: IssueSellerToken = {
+      email,
+      password,
+    };
+
+    // Act
+    const response = await request(app.getHttpServer())
+      .post("/seller/issueToken")
+      .send(token);
+
+    // Assert
+    expect(response.status)
+      .toBe(400);
+  });
+
+  it("잘못된_비밀번호가_사용되면_400_Bad_Request_상태코드를_반환한다", async() => {
+    // Arrange
+    const email = generateEmail();
+    const password = generatePassword();
+    const wrongPassword = generatePassword();
+
+    const command: CreateSellerCommand = {
+      email,
+      username: generateUsername(),
+      password,
+    };
+
+    const token: IssueSellerToken = {
+      email,
+      password: wrongPassword,
+    };
+
+    // Act
+    await request(app.getHttpServer())
+      .post("/seller/signUp")
+      .send(command);
+
+    const response = await request(app.getHttpServer())
+      .post("/seller/issueToken")
+      .send(token);
+
+    // Assert
+    expect(response.status)
+      .toBe(400);
   });
 });
