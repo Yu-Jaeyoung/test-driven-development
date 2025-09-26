@@ -56,4 +56,37 @@ describe("POST /seller/issueToken", () => {
     expect(response.status)
       .toBe(200);
   });
+
+  it("올바르게_요청하면_접근_토큰을_반환한다", async() => {
+    // Arrange
+    const email = generateEmail();
+    const password = generatePassword();
+
+    const command: CreateSellerCommand = {
+      email,
+      username: generateUsername(),
+      password,
+    };
+
+    const token: IssueSellerToken = {
+      email,
+      password,
+    };
+
+    // Act
+    await request(app.getHttpServer())
+      .post("/seller/signUp")
+      .send(command);
+
+    const response = await request(app.getHttpServer())
+      .post("/seller/issueToken")
+      .send(token);
+
+    // Assert
+    expect(response.body)
+      .toBeDefined();
+
+    expect(response.body.accessToken)
+      .toBeDefined();
+  });
 });

@@ -1,3 +1,4 @@
+import { AccessTokenCarrier } from "@/commerce/result/access-token-carrier";
 import { Controller, HttpStatus, Post, Res } from "@nestjs/common";
 import type { Response } from "express";
 
@@ -10,7 +11,9 @@ export class SellerIssueTokenController {
     @Res()
     res: Response,
   ) {
+    const token: AccessTokenCarrier = { accessToken: "token" };
+
     return res.status(HttpStatus.OK)
-              .send();
+              .send(token);
   }
 }
