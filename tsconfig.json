@@ -20,5 +20,10 @@
     },
     "skipLibCheck": true,
     "incremental": true
-  }
+  },
+  "include": [
+    "src/**/*",
+    "test/**/*",
+    "global.d.ts"
+  ]
 }

@@ -13,6 +13,34 @@ const { generateEmail } = EmailGenerator;
 const { generateUsername } = UsernameGenerator;
 const { generatePassword } = PasswordGenerator;
 
+expect.extend({
+  toBeValidBase64Url(received) {
+    if (typeof received !== "string") {
+      return {
+        pass: false,
+        message: () => `expected a string, but received ${ typeof received }`,
+      };
+    }
+
+    try {
+      Buffer.from(received, "base64url")
+            .toString("utf8");
+      return {
+        pass: true,
+        message: () => `expected "${ received }" not to be a valid Base64-URL encoded string`,
+      };
+    } catch (error) {
+      return {
+        pass: false,
+        message: () =>
+          `expected "${ received }" to be a valid Base64-URL encoded string, 
+          but it failed to decode. \n Error ${ error.message }`,
+      }
+        ;
+    }
+  },
+});
+
 describe("POST /seller/issueToken", () => {
   let app: INestApplication;
 
@@ -88,5 +116,51 @@ describe("POST /seller/issueToken", () => {
 
     expect(response.body.accessToken)
       .toBeDefined();
+  });
+
+  it("접근_토큰은_JWT_형식을_따른다", async() => {
+    // Arrange
+    const email = generateEmail();
+    const password = generatePassword();
+
+    const command: CreateSellerCommand = {
+      email,
+      username: generateUsername(),
+      password,
+    };
+
+    const token: IssueSellerToken = {
+      email,
+      password,
+    };
+
+    // Act
+    await request(app.getHttpServer())
+      .post("/seller/signUp")
+      .send(command);
+
+    const response = await request(app.getHttpServer())
+      .post("/seller/issueToken")
+      .send(token);
+
+    // Assert
+    const actual = response.body.accessToken;
+
+    expect(actual)
+      .toSatisfy((value: string) => {
+        const parts = value.split(".");
+
+        expect(parts.length)
+          .toEqual(3);
+
+        expect(parts[0])
+          .toBeValidBase64Url();
+        expect(parts[1])
+          .toBeValidBase64Url();
+        expect(parts[2])
+          .toBeValidBase64Url();
+
+        return true;
+      });
   });
 });
