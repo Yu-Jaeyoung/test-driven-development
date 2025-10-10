@@ -13,6 +13,33 @@ const { generateEmail } = EmailGenerator;
 const { generateUsername } = UsernameGenerator;
 const { generatePassword } = PasswordGenerator;
 
+expect.extend({
+  toBeValidBase64Url(received) {
+    if (typeof received !== "string") {
+      return {
+        pass: false,
+        message: () => `expected a string, but received ${ typeof received }`,
+      };
+    }
+
+    try {
+      Buffer.from(received, "base64url")
+            .toString("utf8");
+      return {
+        pass: true,
+        message: () => `expected "${ received }" not to be a valid Base64-URL encoded string`,
+      };
+    } catch (error) {
+      return {
+        pass: false,
+        message: () =>
+          `expected "${ received }" to be a valid Base64-URL encoded string, 
+          but it failed to decode. \n Error ${ error.message }`,
+      };
+    }
+  },
+});
+
 describe("POST /shopper/issueToken", () => {
   let app: INestApplication;
 
@@ -59,4 +86,99 @@ describe("POST /shopper/issueToken", () => {
       .toBeDefined();
   });
 
+  it("접근_토큰은_JWT_형식을_따른다", async() => {
+    // Arrange
+    const email = generateEmail();
+    const password = generatePassword();
+
+    const command: CreateShopperCommand = {
+      email,
+      username: generateUsername(),
+      password,
+    };
+
+    const token: IssueShopperToken = {
+      email,
+      password,
+    };
+
+    // Act
+    await request(app.getHttpServer())
+      .post("/shopper/signUp")
+      .send(command);
+
+    const response = await request(app.getHttpServer())
+      .post("/shopper/issueToken")
+      .send(token);
+
+    // Assert
+    const actual = response.body.accessToken;
+
+    expect(actual)
+      .toSatisfy((value: string) => {
+        const parts = value.split(".");
+
+        expect(parts.length)
+          .toEqual(3);
+
+        expect(parts[0])
+          .toBeValidBase64Url();
+        expect(parts[1])
+          .toBeValidBase64Url();
+        expect(parts[2])
+          .toBeValidBase64Url();
+
+        return true;
+      });
+  });
+
+  it("존재하지_않는_이메일_주소가_사용되면_400_Bad_Request_상태코드를_반환한다", async() => {
+    // Arrange
+    const email = generateEmail();
+    const password = generatePassword();
+
+    const token: IssueShopperToken = {
+      email,
+      password,
+    };
+
+    // Act
+    const response = await request(app.getHttpServer())
+      .post("/shopper/issueToken")
+      .send(token);
+
+    // Assert
+    expect(response.status)
+      .toBe(400);
+  });
+
+  it("잘못된_비밀번호가_사용되면_400_Bad_Request_상태코드를_반환한다", async() => {
+    // Arrange
+    const email = generateEmail();
+    const password = generatePassword();
+    const wrongPassword = generatePassword();
+
+    const command: CreateShopperCommand = {
+      email,
+      username: generateUsername(),
+      password,
+    };
+
+    const token: IssueShopperToken = {
+      email,
+      password: wrongPassword,
+    };
+
+    await request(app.getHttpServer())
+      .post("/shopper/signUp")
+      .send(command);
+
+    const response = await request(app.getHttpServer())
+      .post("/shopper/issueToken")
+      .send(token);
+
+    // Assert
+    expect(response.status)
+      .toBe(400);
+  });
 });

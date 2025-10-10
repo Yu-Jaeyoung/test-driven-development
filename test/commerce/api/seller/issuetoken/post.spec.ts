@@ -35,8 +35,7 @@ expect.extend({
         message: () =>
           `expected "${ received }" to be a valid Base64-URL encoded string, 
           but it failed to decode. \n Error ${ error.message }`,
-      }
-        ;
+      };
     }
   },
 });
