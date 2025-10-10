@@ -1,7 +1,7 @@
 import { Body, Controller, HttpStatus, Post, Res } from "@nestjs/common";
 import type { Response } from "express";
 import type { CreateShopperCommand } from "@/commerce/command/create-shopper-command";
-import { isEmailValid, isUsernameValid } from "@/commerce/user-property-validator";
+import { isEmailValid, isPasswordValid, isUsernameValid } from "@/commerce/user-property-validator";
 
 @Controller("/shopper")
 export class ShopperSignupController {
@@ -22,6 +22,8 @@ export class ShopperSignupController {
   }
 
   private isCommandValid(command: CreateShopperCommand) {
-    return isEmailValid(command.email) && isUsernameValid(command.username);
+    return isEmailValid(command.email)
+      && isUsernameValid(command.username)
+      && isPasswordValid(command.password);
   }
 }

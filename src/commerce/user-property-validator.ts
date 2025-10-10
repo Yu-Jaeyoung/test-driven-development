@@ -8,3 +8,7 @@ export function isEmailValid(email: string | undefined): boolean {
 export function isUsernameValid(username: string | undefined): boolean {
   return username !== undefined && USER_NAME_REGEX.test(username);
 }
+
+export function isPasswordValid(password: string | undefined): boolean {
+  return password !== undefined && password.length >= 8;
+}

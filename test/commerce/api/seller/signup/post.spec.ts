@@ -10,6 +10,7 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { Seller } from "@/commerce/seller";
 import { Repository } from "typeorm";
 import type { CreateSellerCommand } from "@/commerce/command/create-seller-command";
+import { invalidPassword } from "../../../test-data-source";
 
 const { generateEmail } = EmailGenerator;
 const { generateUsername } = UsernameGenerator;
@@ -175,11 +176,7 @@ describe("POST /seller/signUp", () => {
       .toBe(400);
   });
 
-  it.each([
-    "",
-    "pass",
-    "pass123",
-  ])("password_속성이_올바른_형식을_따르지_않으면_400_Bad_Request_상태코드를_반환한다", async(password: string) => {
+  it.each(invalidPassword())("password_속성이_올바른_형식을_따르지_않으면_400_Bad_Request_상태코드를_반환한다", async(password: string) => {
     // Arrange
     const command: CreateSellerCommand = {
       email: generateEmail(),

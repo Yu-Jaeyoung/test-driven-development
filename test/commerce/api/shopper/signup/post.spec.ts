@@ -7,6 +7,7 @@ import { EmailGenerator } from "../../../email-generator";
 import { UsernameGenerator } from "../../../username-generator";
 import { PasswordGenerator } from "../../../password-generator";
 import request from "supertest";
+import { invalidPassword } from "../../../test-data-source";
 
 const { generateEmail } = EmailGenerator;
 const { generateUsername } = UsernameGenerator;
@@ -150,5 +151,41 @@ describe("POST /shopper/signUp", () => {
     // Assert
     expect(response.status)
       .toBe(204);
+  });
+
+  it("password 속성이 지정되지 않으면 400 Bad Request 상태코드를 반환한다", async() => {
+    // Arrange
+    const command: CreateShopperCommand = {
+      email: generateEmail(),
+      username: generateUsername(),
+      password: undefined,
+    };
+
+    // Act
+    const response = await request(app.getHttpServer())
+      .post("/shopper/signUp")
+      .send(command);
+
+    // Assert
+    expect(response.status)
+      .toBe(400);
+  });
+
+  it.each(invalidPassword())("password_속성이_올바른_형식을_따르지_않으면_400_Bad_Request_상태코드를_반환한다", async(password: string) => {
+    // Arrange
+    const command: CreateShopperCommand = {
+      email: generateEmail(),
+      username: generateUsername(),
+      password,
+    };
+
+    // Act
+    const response = await request(app.getHttpServer())
+      .post("/shopper/signUp")
+      .send(command);
+
+    // Assert
+    expect(response.status)
+      .toBe(400);
   });
 });
