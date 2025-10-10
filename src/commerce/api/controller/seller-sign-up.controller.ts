@@ -4,9 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Seller } from "@/commerce/seller";
 import type { CreateSellerCommand } from "@/commerce/command/create-seller-command";
-import { isEmailValid } from "@/commerce/user-property-validator";
-
-export const USER_NAME_REGEX: RegExp = /^[a-zA-Z0-9_-]{3,}$/;
+import { isEmailValid, isUsernameValid } from "@/commerce/user-property-validator";
 
 @Controller("/seller")
 export class SellerSignUpController {
@@ -49,13 +47,8 @@ export class SellerSignUpController {
 
   private isCommandValid(command: CreateSellerCommand): boolean {
     return isEmailValid(command.email)
-      && this.isUsernameValid(command.username)
+      && isUsernameValid(command.username)
       && this.isPasswordValid(command.password);
-  }
-
-
-  private isUsernameValid(username: string | undefined): boolean {
-    return username !== undefined && USER_NAME_REGEX.test(username);
   }
 
   private isPasswordValid(password: string | undefined): boolean {

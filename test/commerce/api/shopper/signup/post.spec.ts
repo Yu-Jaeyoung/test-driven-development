@@ -1,4 +1,4 @@
-import { beforeAll, describe, it, expect } from "bun:test";
+import { beforeAll, describe, expect, it } from "bun:test";
 import type { INestApplication } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { AppModule } from "@/app.module";
@@ -83,5 +83,72 @@ describe("POST /shopper/signUp", () => {
     // Assert
     expect(response.status)
       .toBe(400);
+  });
+
+  it("username_속성이_지정되지_않으면_400_Bad_Request_상태코드를_반환한다", async() => {
+    // Arrange
+    const command: CreateShopperCommand = {
+      email: generateEmail(),
+      username: undefined,
+      password: generatePassword(),
+    };
+
+    // Act
+    const response = await request(app.getHttpServer())
+      .post("/shopper/signUp")
+      .send(command);
+
+    // Assert
+    expect(response.status)
+      .toBe(400);
+  });
+
+  it.each([
+    "",
+    "sh",
+    "shopper ",
+    "shopper.",
+    "shopper!",
+    "shopper@",
+  ])("username_속성이_올바른_형식을_따르지_않으면_400_Bad_Request_상태코드를_반환한다", async(username: string) => {
+    // Arrange
+    const command: CreateShopperCommand = {
+      email: generateEmail(),
+      username,
+      password: generatePassword(),
+    };
+
+    // Act
+    const response = await request(app.getHttpServer())
+      .post("/shopper/signUp")
+      .send(command);
+
+    // Assert
+    expect(response.status)
+      .toBe(400);
+  });
+
+  it.each([
+    "abcdefghijklmnopqrstuvwxyz",
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    "0123456789",
+    "shopper_",
+    "shopper-",
+  ])("username 속성이 올바른 형식을 따르면 204 No Content 상태코드를 반환한다", async(username: string) => {
+    // Arrange
+    const command: CreateShopperCommand = {
+      email: generateEmail(),
+      username,
+      password: generatePassword(),
+    };
+
+    // Act
+    const response = await request(app.getHttpServer())
+      .post("/shopper/signUp")
+      .send(command);
+
+    // Assert
+    expect(response.status)
+      .toBe(204);
   });
 });
