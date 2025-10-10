@@ -8,6 +8,9 @@ import { UsernameGenerator } from "../../../username-generator";
 import { PasswordGenerator } from "../../../password-generator";
 import request from "supertest";
 import { invalidPassword } from "../../../test-data-source";
+import { Repository } from "typeorm";
+import { Shopper } from "@/commerce/shopper";
+import { getRepositoryToken } from "@nestjs/typeorm";
 
 const { generateEmail } = EmailGenerator;
 const { generateUsername } = UsernameGenerator;
@@ -15,6 +18,7 @@ const { generatePassword } = PasswordGenerator;
 
 describe("POST /shopper/signUp", () => {
   let app: INestApplication;
+  let shopperRepository: Repository<Shopper>;
 
   beforeAll(async() => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -23,6 +27,7 @@ describe("POST /shopper/signUp", () => {
                                                    .compile();
 
     app = moduleFixture.createNestApplication();
+    shopperRepository = moduleFixture.get(getRepositoryToken(Shopper));
     await app.init();
   });
 
@@ -187,5 +192,78 @@ describe("POST /shopper/signUp", () => {
     // Assert
     expect(response.status)
       .toBe(400);
+  });
+
+  it("email_속성에_이미_존재하는_이메일_주소가_지정되면_400_Bad_Request_상태코드를_반환한다", async() => {
+    const email = generateEmail();
+
+    // Arrange
+    await request(app.getHttpServer())
+      .post("/shopper/signUp")
+      .send({
+        email,
+        username: generateUsername(),
+        password: generatePassword(),
+      });
+
+    // Act
+    const response = await request(app.getHttpServer())
+      .post("/shopper/signUp")
+      .send({
+        email,
+        username: generateUsername(),
+        password: generatePassword(),
+      });
+
+    // Assert
+    expect(response.status)
+      .toBe(400);
+  });
+
+  it("username_속성이_이미_존재하는_사용자_이름이_지정되면_400_Bad_Request_상태코드를_반환한다", async() => {
+    const username = generateUsername();
+
+    // Arrange
+    await request(app.getHttpServer())
+      .post("/shopper/signUp")
+      .send({
+        email: generateEmail(),
+        username,
+        password: generatePassword(),
+      });
+
+    // Act
+    const response = await request(app.getHttpServer())
+      .post("/shopper/signUp")
+      .send({
+        email: generateEmail(),
+        username,
+        password: generatePassword(),
+      });
+
+    // Assert
+    expect(response.status)
+      .toBe(400);
+  });
+
+  it("비밀번호를 올바르게 암호화한다", async() => {
+    // Arrange
+    const command: CreateShopperCommand = {
+      email: generateEmail(),
+      username: generateUsername(),
+      password: generatePassword(),
+    };
+
+    // Act
+    const result = await request(app.getHttpServer())
+      .post("/shopper/signUp")
+      .send(command);
+
+    const shopper = await shopperRepository.findOneBy({ email: command.email! });
+    const isMatch = await Bun.password.verify(command.password!, shopper?.hashedPassword!);
+
+    // Assert
+    expect(isMatch)
+      .toBe(true);
   });
 });

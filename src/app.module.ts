@@ -1,12 +1,14 @@
 import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import * as process from "node:process";
+import { JwtModule } from "@nestjs/jwt";
 import { ConfigModule } from "@nestjs/config";
+import { TypeOrmModule } from "@nestjs/typeorm";
 import { Seller } from "@/commerce/seller";
+import { Shopper } from "@/commerce/shopper";
 import { SellerSignUpController } from "@/commerce/api/controller/seller-sign-up.controller";
 import { SellerIssueTokenController } from "@/commerce/api/controller/seller-issue-token.controller";
-import { JwtModule } from "@nestjs/jwt";
 import { ShopperSignupController } from "@/commerce/api/controller/shopper-signup.controller";
+
+import * as process from "node:process";
 
 @Module({
   imports: [
@@ -15,11 +17,11 @@ import { ShopperSignupController } from "@/commerce/api/controller/shopper-signu
       type: "postgres",
       url: process.env.DATABASE_URL,
       ssl: true,
-      entities: [ Seller ],
+      entities: [ Seller, Shopper ],
       synchronize: true,
       dropSchema: true,
     }),
-    TypeOrmModule.forFeature([ Seller ]),
+    TypeOrmModule.forFeature([ Seller, Shopper ]),
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,

@@ -36,7 +36,6 @@ export class SellerSignUpController {
         hashedPassword,
       });
     } catch (error) {
-
       return res.status(HttpStatus.BAD_REQUEST)
                 .send();
     }
