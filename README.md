@@ -143,9 +143,9 @@
 
 테스트
 
-- [ ] 올바르게 요청하면 204 No Content 상태코드를 반환한다
-- [ ] email 속성이 지정되지 않으면 400 Bad Request 상태코드를 반환한다
-- [ ] email 속성이 올바른 형식을 따르지 않으면 400 Bad Request 상태코드를 반환한다
+- [x] 올바르게 요청하면 204 No Content 상태코드를 반환한다
+- [x] email 속성이 지정되지 않으면 400 Bad Request 상태코드를 반환한다
+- [x] email 속성이 올바른 형식을 따르지 않으면 400 Bad Request 상태코드를 반환한다
 - [ ] username 속성이 지정되지 않으면 400 Bad Request 상태코드를 반환한다
 - [ ] username 속성이 올바른 형식을 따르지 않으면 400 Bad Request 상태코드를 반환한다
 - [ ] username 속성이 올바른 형식을 따르면 204 No Content 상태코드를 반환한다

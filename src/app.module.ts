@@ -6,6 +6,7 @@ import { Seller } from "@/commerce/seller";
 import { SellerSignUpController } from "@/commerce/api/controller/seller-sign-up.controller";
 import { SellerIssueTokenController } from "@/commerce/api/controller/seller-issue-token.controller";
 import { JwtModule } from "@nestjs/jwt";
+import { ShopperSignupController } from "@/commerce/api/controller/shopper-signup.controller";
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { JwtModule } from "@nestjs/jwt";
   controllers: [
     SellerSignUpController,
     SellerIssueTokenController,
+    ShopperSignupController,
   ],
 })
 export class AppModule {
