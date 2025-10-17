@@ -65,7 +65,7 @@ describe("POST /seller/issueToken", () => {
       password,
     };
 
-    const token: IssueSellerToken = {
+    const tokenData: IssueSellerToken = {
       email,
       password,
     };
@@ -77,7 +77,7 @@ describe("POST /seller/issueToken", () => {
 
     const response = await request(app.getHttpServer())
       .post("/seller/issueToken")
-      .send(token);
+      .send(tokenData);
 
     // Assert
     expect(response.status)
@@ -95,7 +95,7 @@ describe("POST /seller/issueToken", () => {
       password,
     };
 
-    const token: IssueSellerToken = {
+    const tokenData: IssueSellerToken = {
       email,
       password,
     };
@@ -107,7 +107,7 @@ describe("POST /seller/issueToken", () => {
 
     const response = await request(app.getHttpServer())
       .post("/seller/issueToken")
-      .send(token);
+      .send(tokenData);
 
     // Assert
     expect(response.body)
@@ -128,7 +128,7 @@ describe("POST /seller/issueToken", () => {
       password,
     };
 
-    const token: IssueSellerToken = {
+    const tokenData: IssueSellerToken = {
       email,
       password,
     };
@@ -140,7 +140,7 @@ describe("POST /seller/issueToken", () => {
 
     const response = await request(app.getHttpServer())
       .post("/seller/issueToken")
-      .send(token);
+      .send(tokenData);
 
     // Assert
     const actual = response.body.accessToken;
@@ -168,7 +168,7 @@ describe("POST /seller/issueToken", () => {
     const email = generateEmail();
     const password = generatePassword();
 
-    const token: IssueSellerToken = {
+    const tokenData: IssueSellerToken = {
       email,
       password,
     };
@@ -176,7 +176,7 @@ describe("POST /seller/issueToken", () => {
     // Act
     const response = await request(app.getHttpServer())
       .post("/seller/issueToken")
-      .send(token);
+      .send(tokenData);
 
     // Assert
     expect(response.status)
@@ -195,7 +195,7 @@ describe("POST /seller/issueToken", () => {
       password,
     };
 
-    const token: IssueSellerToken = {
+    const tokenData: IssueSellerToken = {
       email,
       password: wrongPassword,
     };
@@ -207,7 +207,7 @@ describe("POST /seller/issueToken", () => {
 
     const response = await request(app.getHttpServer())
       .post("/seller/issueToken")
-      .send(token);
+      .send(tokenData);
 
     // Assert
     expect(response.status)

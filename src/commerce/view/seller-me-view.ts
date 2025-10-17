@@ -1,5 +1,5 @@
 interface SellerMeView {
   id: string;
-  email: string;
-  username: string;
+  email: string | undefined;
+  username: string | undefined;
 }

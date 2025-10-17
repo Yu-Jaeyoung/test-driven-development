@@ -31,6 +31,7 @@ export class SellerSignUpController {
 
     try {
       await this.sellerRepository.save({
+        id: crypto.randomUUID(),
         email: command.email,
         username: command.username,
         hashedPassword,
