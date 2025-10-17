@@ -2,9 +2,9 @@ import { Body, Controller, HttpStatus, Post, Res } from "@nestjs/common";
 import type { Response } from "express";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Seller } from "@/commerce/seller";
-import type { CreateSellerCommand } from "@/commerce/command/create-seller-command";
-import { isEmailValid, isPasswordValid, isUsernameValid } from "@/commerce/user-property-validator";
+import { Seller } from "@src/commerce/seller";
+import type { CreateSellerCommand } from "@src/commerce/command/create-seller-command";
+import { isEmailValid, isPasswordValid, isUsernameValid } from "@src/commerce/user-property-validator";
 
 @Controller("/seller")
 export class SellerSignUpController {

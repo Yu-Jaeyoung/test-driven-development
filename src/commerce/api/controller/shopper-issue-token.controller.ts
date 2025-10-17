@@ -1,11 +1,11 @@
 import { Body, Controller, HttpStatus, Post, Res } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import type { Response } from "express";
-import type { AccessTokenCarrier } from "@/commerce/result/access-token-carrier";
+import type { AccessTokenCarrier } from "@src/commerce/result/access-token-carrier";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Shopper } from "@/commerce/shopper";
+import { Shopper } from "@src/commerce/shopper";
 import { Repository } from "typeorm";
-import type { IssueShopperToken } from "@/commerce/query/issue-shopper-token";
+import type { IssueShopperToken } from "@src/commerce/query/issue-shopper-token";
 
 @Controller("/shopper")
 export class ShopperIssueTokenController {

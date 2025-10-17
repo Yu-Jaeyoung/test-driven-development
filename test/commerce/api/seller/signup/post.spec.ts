@@ -1,16 +1,16 @@
-import { beforeAll, describe, expect, it } from "bun:test";
-import { Test, TestingModule } from "@nestjs/testing";
-import type { INestApplication } from "@nestjs/common";
 import request from "supertest";
-import { EmailGenerator } from "../../../email-generator";
-import { UsernameGenerator } from "../../../username-generator";
-import { PasswordGenerator } from "../../../password-generator";
-import { AppModule } from "@/app.module";
-import { getRepositoryToken } from "@nestjs/typeorm";
-import { Seller } from "@/commerce/seller";
 import { Repository } from "typeorm";
-import type { CreateSellerCommand } from "@/commerce/command/create-seller-command";
-import { invalidPassword } from "../../../test-data-source";
+import { AppModule } from "@src/app.module";
+import { Test, TestingModule } from "@nestjs/testing";
+import { beforeAll, describe, expect, it } from "bun:test";
+import { EmailGenerator } from "@test/commerce/email-generator";
+import { UsernameGenerator } from "@test/commerce/username-generator";
+import { PasswordGenerator } from "@test/commerce/password-generator";
+import { invalidPassword } from "@test/commerce/test-data-source";
+import { Seller } from "@src/commerce/seller";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import type { INestApplication } from "@nestjs/common";
+import type { CreateSellerCommand } from "@src/commerce/command/create-seller-command";
 
 const { generateEmail } = EmailGenerator;
 const { generateUsername } = UsernameGenerator;

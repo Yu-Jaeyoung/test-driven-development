@@ -2,15 +2,15 @@ import { Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Seller } from "@/commerce/seller";
-import { Shopper } from "@/commerce/shopper";
-import { SellerSignUpController } from "@/commerce/api/controller/seller-sign-up.controller";
-import { SellerIssueTokenController } from "@/commerce/api/controller/seller-issue-token.controller";
-import { ShopperSignupController } from "@/commerce/api/controller/shopper-signup.controller";
+import { Seller } from "@src/commerce/seller";
+import { Shopper } from "@src/commerce/shopper";
+import { SellerSignUpController } from "@src/commerce/api/controller/seller-sign-up.controller";
+import { SellerIssueTokenController } from "@src/commerce/api/controller/seller-issue-token.controller";
+import { ShopperSignupController } from "@src/commerce/api/controller/shopper-signup.controller";
 
 import * as process from "node:process";
-import { ShopperIssueTokenController } from "@/commerce/api/controller/shopper-issue-token.controller";
-import { SellerMeController } from "@/commerce/api/controller/seller-me.controller";
+import { ShopperIssueTokenController } from "@src/commerce/api/controller/shopper-issue-token.controller";
+import { SellerMeController } from "@src/commerce/api/controller/seller-me.controller";
 
 @Module({
   imports: [

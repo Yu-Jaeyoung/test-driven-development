@@ -1,9 +1,9 @@
 import { Body, Controller, HttpStatus, Post, Res } from "@nestjs/common";
 import type { Response } from "express";
-import type { CreateShopperCommand } from "@/commerce/command/create-shopper-command";
-import { isEmailValid, isPasswordValid, isUsernameValid } from "@/commerce/user-property-validator";
+import type { CreateShopperCommand } from "@src/commerce/command/create-shopper-command";
+import { isEmailValid, isPasswordValid, isUsernameValid } from "@src/commerce/user-property-validator";
 import { Repository } from "typeorm";
-import { Shopper } from "@/commerce/shopper";
+import { Shopper } from "@src/commerce/shopper";
 import { InjectRepository } from "@nestjs/typeorm";
 
 @Controller("/shopper")

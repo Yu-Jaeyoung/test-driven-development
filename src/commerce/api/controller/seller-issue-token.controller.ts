@@ -1,10 +1,10 @@
-import { AccessTokenCarrier } from "@/commerce/result/access-token-carrier";
+import { AccessTokenCarrier } from "@src/commerce/result/access-token-carrier";
 import { Body, Controller, HttpStatus, Post, Res } from "@nestjs/common";
 import type { Response } from "express";
 import { JwtService } from "@nestjs/jwt";
 import { Repository } from "typeorm";
-import { Seller } from "@/commerce/seller";
-import type { IssueSellerToken } from "@/commerce/query/issue-seller-token";
+import { Seller } from "@src/commerce/seller";
+import type { IssueSellerToken } from "@src/commerce/query/issue-seller-token";
 import { InjectRepository } from "@nestjs/typeorm";
 
 @Controller("/seller")
