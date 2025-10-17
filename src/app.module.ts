@@ -10,6 +10,7 @@ import { ShopperSignupController } from "@/commerce/api/controller/shopper-signu
 
 import * as process from "node:process";
 import { ShopperIssueTokenController } from "@/commerce/api/controller/shopper-issue-token.controller";
+import { SellerMeController } from "@/commerce/api/controller/seller-me.controller";
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ShopperIssueTokenController } from "@/commerce/api/controller/shopper-i
     SellerIssueTokenController,
     ShopperSignupController,
     ShopperIssueTokenController,
+    SellerMeController,
   ],
 })
 export class AppModule {

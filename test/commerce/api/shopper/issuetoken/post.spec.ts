@@ -1,4 +1,4 @@
-import { beforeAll, describe, it, expect } from "bun:test";
+import { beforeAll, describe, expect, it } from "bun:test";
 import { EmailGenerator } from "../../../email-generator";
 import { UsernameGenerator } from "../../../username-generator";
 import { PasswordGenerator } from "../../../password-generator";
