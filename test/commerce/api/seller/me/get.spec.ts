@@ -183,4 +183,50 @@ describe("GET /seller/me", () => {
     expect(response1.body.id)
       .toEqual(response2.body.id);
   });
+
+  it("판매자의_기본_정보가_올바르게_설정된다", async() => {
+    // Arrange
+    const email = generateEmail();
+    const username = generateUsername();
+    const password = generatePassword();
+
+    const command: CreateSellerCommand = {
+      email,
+      username,
+      password,
+    };
+
+    const tokenData: IssueSellerToken = {
+      email,
+      password,
+    };
+
+    // Act
+    await request(app.getHttpServer())
+      .post("/seller/signUp")
+      .send(command);
+
+    const responseToken = (await request(app.getHttpServer())
+      .post("/seller/issueToken")
+      .send(tokenData)).body.accessToken;
+
+    const response = await request(app.getHttpServer())
+      .get("/seller/me")
+      .set("Authorization", `Bearer ${ responseToken }`)
+      .send();
+
+    // Assert
+    const actual: SellerMeView = {
+      ...response.body,
+    };
+
+    expect(actual)
+      .toBeDefined();
+
+    expect(actual.email)
+      .toEqual(email);
+
+    expect(actual.username)
+      .toEqual(username);
+  });
 });
