@@ -17,25 +17,25 @@
     "@nestjs/common": "^11.1.6",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.6",
-    "@nestjs/jwt": "^11.0.0",
+    "@nestjs/jwt": "^11.0.1",
     "@nestjs/platform-express": "^11.1.6",
     "@nestjs/typeorm": "^11.0.0",
     "@types/pg": "^8.15.5",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
-    "typeorm": "^0.3.26"
+    "typeorm": "^0.3.27"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.10",
-    "@nestjs/schematics": "^11.0.7",
+    "@nestjs/schematics": "^11.0.9",
     "@nestjs/testing": "^11.1.6",
     "@types/bun": "latest",
     "@types/express": "^5.0.3",
-    "@types/node": "^24.3.1",
+    "@types/node": "^24.8.1",
     "@types/supertest": "^6.0.3",
     "express": "^5.1.0",
     "supertest": "^7.1.4",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   },
   "private": true
 }

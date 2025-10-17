@@ -47,6 +47,6 @@ export class ShopperIssueTokenController {
   }
 
   private composeToken() {
-    return { accessToken: this.jwtService.sign("") };
+    return { accessToken: this.jwtService.sign("seller") };
   }
 }
