@@ -31,8 +31,11 @@ export class ShopperSignupController {
       algorithm: "bcrypt",
     });
 
+    const id = crypto.randomUUID();
+
     try {
       await this.shopperRepository.save({
+        id,
         email: command.email,
         username: command.username,
         hashedPassword,

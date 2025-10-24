@@ -75,4 +75,28 @@ describe("GET /shopper/me", () => {
       .toEqual(response2.body.id);
 
   });
+
+  it("같은_구매자의_식별자는_항상_같다", async() => {
+    // Arrange
+    const email = generateEmail();
+    const password = generatePassword();
+
+    await fixture.createShopper(email, generateUsername(), password);
+
+    const token1 = await fixture.issueShopperToken(email, password);
+    const token2 = await fixture.issueShopperToken(email, password);
+
+    // Act
+    const response1 = await fixture.client()
+                                   .get("/shopper/me")
+                                   .set("Authorization", `Bearer ${ token1 }`);
+
+    const response2 = await fixture.client()
+                                   .get("/shopper/me")
+                                   .set("Authorization", `Bearer ${ token2 }`);
+
+    // Assert
+    expect(response1.body.id)
+      .toEqual(response2.body.id);
+  });
 });

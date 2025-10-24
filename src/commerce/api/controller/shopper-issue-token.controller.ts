@@ -42,13 +42,13 @@ export class ShopperIssueTokenController {
                 .send();
     }
 
-    const token: AccessTokenCarrier = this.composeToken();
+    const token: AccessTokenCarrier = this.composeToken(result);
 
     return res.status(HttpStatus.OK)
               .send(token);
   }
 
-  private composeToken() {
-    return { accessToken: this.jwtService.sign({ sub: "shopper" }) };
+  private composeToken(shopper: Shopper) {
+    return { accessToken: this.jwtService.sign({ sub: shopper.id }) };
   }
 }

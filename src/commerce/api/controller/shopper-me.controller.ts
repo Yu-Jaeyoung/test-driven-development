@@ -1,16 +1,23 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, Req, Res } from "@nestjs/common";
+
+import type { Request, Response } from "express";
 
 @Controller("/shopper")
 export class ShopperMeController {
 
   @Get("/me")
-  async me() {
+  async me(
+    @Req()
+    req: Request & { user: { sub: string } },
+    @Res()
+    res: Response,
+  ) {
     const shopperInfo: ShopperMeView = {
-      id: crypto.randomUUID(),
+      id: req.user.sub,
       email: undefined,
       username: undefined,
     };
 
-    return shopperInfo;
+    return res.send(shopperInfo);
   }
 }
