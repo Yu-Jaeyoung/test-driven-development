@@ -5,6 +5,7 @@ import { Repository } from "typeorm";
 import { Seller } from "@src/commerce/seller";
 import type { CreateSellerCommand } from "@src/commerce/command/create-seller-command";
 import { isEmailValid, isPasswordValid, isUsernameValid } from "@src/commerce/user-property-validator";
+import { Public } from "@src/commerce/public.decorator";
 
 @Controller("/seller")
 export class SellerSignUpController {
@@ -13,6 +14,7 @@ export class SellerSignUpController {
     private readonly sellerRepository: Repository<Seller>,
   ) {}
 
+  @Public()
   @Post("/signUp")
   async signUp(
     @Res()

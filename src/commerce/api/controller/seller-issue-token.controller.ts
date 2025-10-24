@@ -6,6 +6,7 @@ import { Repository } from "typeorm";
 import { Seller } from "@src/commerce/seller";
 import type { IssueSellerToken } from "@src/commerce/query/issue-seller-token";
 import { InjectRepository } from "@nestjs/typeorm";
+import { Public } from "@src/commerce/public.decorator";
 
 @Controller("/seller")
 export class SellerIssueTokenController {
@@ -15,6 +16,7 @@ export class SellerIssueTokenController {
     private readonly sellerRepository: Repository<Seller>,
   ) {}
 
+  @Public()
   @Post("/issueToken")
   async issueToken(
     @Body()

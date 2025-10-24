@@ -37,11 +37,21 @@ describe("GET /shopper/me", () => {
     // Act
     const response = await fixture.client()
                                   .get("/shopper/me")
-                                  .set("Authorization", `Bearer ${ token }`)
-                                  .send();
+                                  .set("Authorization", `Bearer ${ token }`);
+                                  
 
     // Assert
     expect(response.status)
       .toBe(200);
+  });
+
+  it("접근 토큰을 사용하지 않으면 401 Unauthorized 상태코드를 반환한다", async() => {
+    // Act
+    const response = await fixture.client()
+                                  .get("/shopper/me")
+                                  .send();
+
+    expect(response.status)
+      .toBe(401);
   });
 });

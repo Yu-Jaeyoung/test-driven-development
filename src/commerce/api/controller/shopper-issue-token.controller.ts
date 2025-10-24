@@ -6,6 +6,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Shopper } from "@src/commerce/shopper";
 import { Repository } from "typeorm";
 import type { IssueShopperToken } from "@src/commerce/query/issue-shopper-token";
+import { Public } from "@src/commerce/public.decorator";
 
 @Controller("/shopper")
 export class ShopperIssueTokenController {
@@ -15,6 +16,7 @@ export class ShopperIssueTokenController {
     private readonly shopperRepository: Repository<Shopper>,
   ) {}
 
+  @Public()
   @Post("/issueToken")
   async issueToken(
     @Body()
@@ -47,6 +49,6 @@ export class ShopperIssueTokenController {
   }
 
   private composeToken() {
-    return { accessToken: this.jwtService.sign("seller") };
+    return { accessToken: this.jwtService.sign({ sub: "shopper" }) };
   }
 }

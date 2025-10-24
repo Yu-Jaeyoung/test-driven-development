@@ -12,6 +12,8 @@ import * as process from "node:process";
 import { ShopperIssueTokenController } from "@src/commerce/api/controller/shopper-issue-token.controller";
 import { SellerMeController } from "@src/commerce/api/controller/seller-me.controller";
 import { ShopperMeController } from "@src/commerce/api/controller/shopper-me.controller";
+import { APP_GUARD } from "@nestjs/core";
+import { AuthGuard } from "@src/commerce/auth.guard";
 
 @Module({
   imports: [
@@ -37,6 +39,12 @@ import { ShopperMeController } from "@src/commerce/api/controller/shopper-me.con
     ShopperIssueTokenController,
     SellerMeController,
     ShopperMeController,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule {

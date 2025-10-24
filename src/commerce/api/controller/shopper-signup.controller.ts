@@ -5,6 +5,7 @@ import { isEmailValid, isPasswordValid, isUsernameValid } from "@src/commerce/us
 import { Repository } from "typeorm";
 import { Shopper } from "@src/commerce/shopper";
 import { InjectRepository } from "@nestjs/typeorm";
+import { Public } from "@src/commerce/public.decorator";
 
 @Controller("/shopper")
 export class ShopperSignupController {
@@ -13,6 +14,7 @@ export class ShopperSignupController {
     private readonly shopperRepository: Repository<Shopper>,
   ) {}
 
+  @Public()
   @Post("/signUp")
   async signUp(
     @Res()
