@@ -39,8 +39,10 @@ export class TestFixture {
       password,
     };
 
-    return await this.client()
-                     .post("/shopper/issueToken")
-                     .send(tokenData);
+    const response = await this.client()
+                               .post("/shopper/issueToken")
+                               .send(tokenData);
+
+    return response.body.accessToken;
   }
 }
