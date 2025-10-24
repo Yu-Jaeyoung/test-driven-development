@@ -99,4 +99,32 @@ describe("GET /shopper/me", () => {
     expect(response1.body.id)
       .toEqual(response2.body.id);
   });
+
+  it("구매자의_기본_정보가_올바르게_설정된다", async() => {
+    // Arrange
+    const email = generateEmail();
+    const username = generateUsername();
+    const password = generatePassword();
+
+    await fixture.createShopper(email, username, password);
+    await fixture.setShopperAsDefaultUser(email, password);
+
+    // Act
+    const response = await fixture.client()
+                                  .get("/shopper/me");
+
+    // Assert
+    const actual: ShopperMeView = {
+      ...response.body,
+    };
+
+    expect(actual)
+      .toBeDefined();
+
+    expect(actual.email)
+      .toEqual(email);
+
+    expect(actual.username)
+      .toEqual(username);
+  });
 });
