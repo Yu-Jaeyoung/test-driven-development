@@ -38,7 +38,7 @@ describe("GET /shopper/me", () => {
     const response = await fixture.client()
                                   .get("/shopper/me")
                                   .set("Authorization", `Bearer ${ token }`);
-                                  
+
 
     // Assert
     expect(response.status)
@@ -53,5 +53,26 @@ describe("GET /shopper/me", () => {
 
     expect(response.status)
       .toBe(401);
+  });
+
+  it("서로_다른_구매자의_식별자는_서로_다르다", async() => {
+    // Arrange
+    const token1 = await fixture.createShopperThenIssueToken();
+    const token2 = await fixture.createShopperThenIssueToken();
+
+    // Act
+    const response1 = await fixture.client()
+                                   .get("/shopper/me")
+                                   .set("Authorization", `Bearer ${ token1 }`);
+
+    const response2 = await fixture.client()
+                                   .get("/shopper/me")
+                                   .set("Authorization", `Bearer ${ token2 }`);
+
+    // Assert
+    expect(response1.body.id)
+      .not
+      .toEqual(response2.body.id);
+
   });
 });
