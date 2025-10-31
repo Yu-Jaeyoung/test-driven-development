@@ -39,7 +39,6 @@ describe("GET /shopper/me", () => {
                                   .get("/shopper/me")
                                   .set("Authorization", `Bearer ${ token }`);
 
-
     // Assert
     expect(response.status)
       .toBe(200);
