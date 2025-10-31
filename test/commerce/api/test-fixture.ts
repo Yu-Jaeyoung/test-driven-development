@@ -149,4 +149,11 @@ export class TestFixture {
         .set("Authorization", `Bearer ${ token }`),
     };
   }
+
+  async createShopperThenSetAsDefaultUser() {
+    const email = generateEmail();
+    const password = generatePassword();
+    await this.createShopper(email, generateUsername(), password);
+    await this.setShopperAsDefaultUser(email, password);
+  }
 }

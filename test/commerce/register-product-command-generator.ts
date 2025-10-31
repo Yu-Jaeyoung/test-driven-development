@@ -11,6 +11,18 @@ export class RegisterProductCommandGenerator {
     };
   }
 
+  static generateRegisterProductCommandWithImageUri(
+    imageUri: string,
+  ): RegisterProductCommand {
+    return {
+      name: this.generateProductName(),
+      imageUri,
+      description: this.generateProductDescription(),
+      priceAmount: this.generatePriceAmount(),
+      stockQuantity: this.generateStockQuantity(),
+    };
+  }
+
   static generateProductName(): string {
     return "name" + crypto.randomUUID();
   }
@@ -29,7 +41,8 @@ export class RegisterProductCommandGenerator {
 
     const price = Math.floor(Math.random() * (max - min + 1)) + min;
 
-    return BigInt(price).toString();
+    return BigInt(price)
+      .toString();
   }
 
   static generateStockQuantity(): number {
