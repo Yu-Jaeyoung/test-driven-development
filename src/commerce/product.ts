@@ -10,4 +10,19 @@ export class Product {
 
   @Column()
   sellerId: string;
+
+  @Column()
+  name: string;
+
+  @Column()
+  imageUri: string;
+
+  @Column()
+  description: string;
+
+  @Column({ type: "bigint" })
+  priceAmount: bigint;
+
+  @Column()
+  stockQuantity: number;
 }

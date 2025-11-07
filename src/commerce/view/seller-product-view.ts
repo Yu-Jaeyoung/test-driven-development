@@ -1,9 +1,9 @@
 interface SellerProductView {
   id: string;
-  name: string;
-  imageUri: string;
-  description: string;
-  priceAmount: string;
-  stockQuantity: number;
-  LocalDateTime: string;
+  name: string | undefined;
+  imageUri: string | undefined;
+  description: string | undefined;
+  priceAmount: string | undefined;
+  stockQuantity: number | undefined;
+  LocalDateTime: string | undefined; // TODO: Check
 }

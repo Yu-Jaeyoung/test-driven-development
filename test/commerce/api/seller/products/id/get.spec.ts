@@ -3,6 +3,8 @@ import { HttpStatus, INestApplication } from "@nestjs/common";
 import { TestFixture } from "@test/commerce/api/test-fixture";
 import { Test, TestingModule } from "@nestjs/testing";
 import { AppModule } from "@src/app.module";
+import { RegisterProductCommandGenerator } from "@test/commerce/register-product-command-generator";
+import type { RegisterProductCommand } from "@src/commerce/command/register-product-command";
 
 describe("GET /seller/products/:id", () => {
   let app: INestApplication;
@@ -84,4 +86,63 @@ describe("GET /seller/products/:id", () => {
     expect(response.status)
       .toBe(HttpStatus.NOT_FOUND);
   });
-});
+
+  it("상품_식별자를_올바르게_반환한다", async() => {
+    // Arrange
+
+    await fixture.createSellerThenSetAsDefaultUser();
+    const id = await fixture.registerProduct();
+
+    // Act
+    const response = await fixture.client()
+                                  .get(`/seller/products/${ id }`)
+                                  .send();
+
+    const actual: SellerProductView = {
+      ...response.body,
+    };
+
+    // Assert
+    expect(actual)
+      .toBeDefined();
+
+    expect(actual.id)
+      .toEqual(id);
+  });
+
+  it("상품_정보를_올바르게_반환한다", async() => {
+    // Arrange
+    await fixture.createSellerThenSetAsDefaultUser();
+    const command: RegisterProductCommand = RegisterProductCommandGenerator.generateRegisterProductCommand();
+    const id = await fixture.registerProduct(command);
+
+    // Act
+    const response = await fixture.client()
+                                  .get(`/seller/products/${ id }`)
+                                  .send();
+
+    // Assert
+    const actual: SellerProductView = {
+      ...response.body,
+    };
+
+    expect(actual)
+      .toBeDefined();
+
+    expect(actual.name)
+      .toEqual(command.name);
+
+    expect(actual.imageUri)
+      .toEqual(command.imageUri);
+
+    expect(actual.description)
+      .toEqual(command.description);
+
+    expect(actual.priceAmount)
+      .toEqual(command.priceAmount);
+
+    expect(actual.stockQuantity)
+      .toEqual(command.stockQuantity);
+  });
+})
+;

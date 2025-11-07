@@ -31,6 +31,11 @@ export class SellerProductsController {
     await this.productRepository.save({
       id,
       sellerId: req.user.sub,
+      name: command.name,
+      imageUri: command.imageUri,
+      description: command.description,
+      priceAmount: BigInt(command.priceAmount),
+      stockQuantity: command.stockQuantity,
     });
 
     const url = `/seller/products/${ id }`;
@@ -49,18 +54,28 @@ export class SellerProductsController {
     @Param("id")
     id: string,
   ) {
-    const result = await this.productRepository.findOneBy({
+    const product = await this.productRepository.findOneBy({
       id,
       sellerId: req.user.sub,
     });
 
-    if (!result) {
+    if (!product) {
       return res.status(HttpStatus.NOT_FOUND)
                 .send();
     }
 
+    const sellerProductView: SellerProductView = {
+      id: product.id,
+      name: product.name,
+      imageUri: product.imageUri,
+      description: product.description,
+      priceAmount: product.priceAmount.toString(),
+      stockQuantity: product.stockQuantity,
+      LocalDateTime: undefined,
+    };
+
     return res.status(HttpStatus.OK)
-              .send();
+              .send(sellerProductView);
   }
 
   private isValidUri(value: string) {

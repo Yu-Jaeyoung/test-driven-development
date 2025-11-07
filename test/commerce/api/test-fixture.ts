@@ -2,11 +2,12 @@ import { INestApplication } from "@nestjs/common";
 import request, { Test } from "supertest";
 import type { CreateShopperCommand } from "@src/commerce/command/create-shopper-command";
 import type { IssueShopperToken } from "@src/commerce/query/issue-shopper-token";
+import type { IssueSellerToken } from "@src/commerce/query/issue-seller-token";
+import type { CreateSellerCommand } from "@src/commerce/command/create-seller-command";
+import type { RegisterProductCommand } from "@src/commerce/command/register-product-command";
 import { EmailGenerator } from "@test/commerce/email-generator";
 import { UsernameGenerator } from "@test/commerce/username-generator";
 import { PasswordGenerator } from "@test/commerce/password-generator";
-import { IssueSellerToken } from "@src/commerce/query/issue-seller-token";
-import { CreateSellerCommand } from "@src/commerce/command/create-seller-command";
 import { RegisterProductCommandGenerator } from "@test/commerce/register-product-command-generator";
 
 const { generateEmail } = EmailGenerator;
@@ -158,13 +159,15 @@ export class TestFixture {
     await this.setShopperAsDefaultUser(email, password);
   }
 
-  async registerProduct() {
+  async registerProduct(command?: RegisterProductCommand) {
+    const cmd = command ?? RegisterProductCommandGenerator.generateRegisterProductCommand();
+
     const response = await this.client()
                                .post("/seller/products")
-                               .send(RegisterProductCommandGenerator.generateRegisterProductCommand());
+                               .send(cmd);
 
     const path = response.headers["location"];
-    return path.split("/")
-               .at(-1);
+
+    return path.split("/seller/products/")[1];
   }
 }
