@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from "bun:test";
-import { INestApplication } from "@nestjs/common";
+import { HttpStatus, INestApplication } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { AppModule } from "@src/app.module";
 import { EmailGenerator } from "@test/commerce/email-generator";
@@ -41,7 +41,7 @@ describe("GET /shopper/me", () => {
 
     // Assert
     expect(response.status)
-      .toBe(200);
+      .toBe(HttpStatus.OK);
   });
 
   it("접근 토큰을 사용하지 않으면 401 Unauthorized 상태코드를 반환한다", async() => {

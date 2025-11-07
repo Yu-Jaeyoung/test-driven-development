@@ -1,19 +1,21 @@
 import type { Response } from "express";
-import { Body, Controller, Get, HttpStatus, Post, Res } from "@nestjs/common";
-import { Repository } from "typeorm";
-import { Seller } from "@src/commerce/seller";
-import { InjectRepository } from "@nestjs/typeorm";
+import { Body, Controller, Get, HttpStatus, Param, Post, Req, Res } from "@nestjs/common";
 import type { RegisterProductCommand } from "@src/commerce/command/register-product-command";
+import { Product } from "@src/commerce/product";
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
 
 @Controller("/seller")
 export class SellerProductsController {
   constructor(
-    @InjectRepository(Seller)
-    private readonly sellerRepository: Repository<Seller>,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
   ) {}
 
   @Post("/products")
   async registerProduct(
+    @Req()
+    req: Request & { user: { sub: string } },
     @Res()
     res: Response,
     @Body()
@@ -24,7 +26,14 @@ export class SellerProductsController {
                 .send();
     }
 
-    const url = `/seller/products/${ crypto.randomUUID() }`;
+    const id = crypto.randomUUID();
+
+    await this.productRepository.save({
+      id,
+      sellerId: req.user.sub,
+    });
+
+    const url = `/seller/products/${ id }`;
 
     return res.setHeader("location", url)
               .status(HttpStatus.CREATED)
@@ -33,8 +42,23 @@ export class SellerProductsController {
 
   @Get("/products/:id")
   async findProduct(
+    @Req()
+    req: Request & { user: { sub: string } },
     @Res()
-    res: Response) {
+    res: Response,
+    @Param("id")
+    id: string,
+  ) {
+    const result = await this.productRepository.findOneBy({
+      id,
+      sellerId: req.user.sub,
+    });
+
+    if (!result) {
+      return res.status(HttpStatus.NOT_FOUND)
+                .send();
+    }
+
     return res.status(HttpStatus.OK)
               .send();
   }

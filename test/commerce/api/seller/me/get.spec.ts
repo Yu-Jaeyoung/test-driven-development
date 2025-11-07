@@ -5,7 +5,7 @@ import { EmailGenerator } from "@test/commerce/email-generator";
 import { PasswordGenerator } from "@test/commerce/password-generator";
 import { UsernameGenerator } from "@test/commerce/username-generator";
 import { Test, TestingModule } from "@nestjs/testing";
-import { INestApplication } from "@nestjs/common";
+import { HttpStatus, INestApplication } from "@nestjs/common";
 import type { CreateSellerCommand } from "@src/commerce/command/create-seller-command";
 import type { IssueSellerToken } from "@src/commerce/query/issue-seller-token";
 
@@ -60,7 +60,7 @@ describe("GET /seller/me", () => {
 
     // Assert
     expect(response.status)
-      .toBe(200);
+      .toBe(HttpStatus.OK);
   });
 
   it("접근 토큰을 사용하지 않으면 401 Unauthorized 상태코드를 반환한다", async() => {

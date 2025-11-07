@@ -9,7 +9,7 @@ import { PasswordGenerator } from "@test/commerce/password-generator";
 import { invalidPassword } from "@test/commerce/test-data-source";
 import { Seller } from "@src/commerce/seller";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import type { INestApplication } from "@nestjs/common";
+import { HttpStatus, INestApplication } from "@nestjs/common";
 import type { CreateSellerCommand } from "@src/commerce/command/create-seller-command";
 
 const { generateEmail } = EmailGenerator;
@@ -64,7 +64,7 @@ describe("POST /seller/signUp", () => {
 
     // Assert
     expect(response.status)
-      .toBe(400);
+      .toBe(HttpStatus.BAD_REQUEST);
   });
 
   it.each([
@@ -88,7 +88,7 @@ describe("POST /seller/signUp", () => {
 
     // Assert
     expect(response.status)
-      .toBe(400);
+      .toBe(HttpStatus.BAD_REQUEST);
   });
 
   it("username_속성이_지정되지_않으면_400_Bad_Request_상태코드를_반환한다", async() => {
@@ -106,7 +106,7 @@ describe("POST /seller/signUp", () => {
 
     // Assert
     expect(response.status)
-      .toBe(400);
+      .toBe(HttpStatus.BAD_REQUEST);
   });
 
   it.each([
@@ -131,7 +131,7 @@ describe("POST /seller/signUp", () => {
 
     // Assert
     expect(response.status)
-      .toBe(400);
+      .toBe(HttpStatus.BAD_REQUEST);
   });
 
   it.each([
@@ -173,7 +173,7 @@ describe("POST /seller/signUp", () => {
 
     // Assert
     expect(response.status)
-      .toBe(400);
+      .toBe(HttpStatus.BAD_REQUEST);
   });
 
   it.each(invalidPassword())("password_속성이_올바른_형식을_따르지_않으면_400_Bad_Request_상태코드를_반환한다", async(password: string) => {
@@ -191,7 +191,7 @@ describe("POST /seller/signUp", () => {
 
     // Assert
     expect(response.status)
-      .toBe(400);
+      .toBe(HttpStatus.BAD_REQUEST);
   });
 
   it("email_속성에_이미_존재하는_이메일_주소가_지정되면_400_Bad_Request_상태코드를_반환한다", async() => {
@@ -217,7 +217,7 @@ describe("POST /seller/signUp", () => {
 
     // Assert
     expect(response.status)
-      .toBe(400);
+      .toBe(HttpStatus.BAD_REQUEST);
   });
 
   it("username_속성에_이미_존재하는_사용자이름이_지정되면_400_Bad_Request_상태코드를_반환한다", async() => {
@@ -243,7 +243,7 @@ describe("POST /seller/signUp", () => {
 
     // Assert
     expect(response.status)
-      .toBe(400);
+      .toBe(HttpStatus.BAD_REQUEST);
   });
 
 

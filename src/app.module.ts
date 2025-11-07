@@ -4,6 +4,7 @@ import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Seller } from "@src/commerce/seller";
 import { Shopper } from "@src/commerce/shopper";
+import { Product } from "@src/commerce/product";
 import { SellerSignUpController } from "@src/commerce/api/controller/seller-sign-up.controller";
 import { SellerIssueTokenController } from "@src/commerce/api/controller/seller-issue-token.controller";
 import { ShopperSignupController } from "@src/commerce/api/controller/shopper-signup.controller";
@@ -23,11 +24,11 @@ import { SellerProductsController } from "@src/commerce/api/controller/seller-pr
       type: "postgres",
       url: process.env.DATABASE_URL,
       ssl: true,
-      entities: [ Seller, Shopper ],
+      entities: [ Seller, Shopper, Product ],
       synchronize: true,
       dropSchema: true,
     }),
-    TypeOrmModule.forFeature([ Seller, Shopper ]),
+    TypeOrmModule.forFeature([ Seller, Shopper, Product ]),
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,

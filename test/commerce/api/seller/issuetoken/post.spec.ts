@@ -5,7 +5,7 @@ import { EmailGenerator } from "@test/commerce/email-generator";
 import { UsernameGenerator } from "@test/commerce/username-generator";
 import { PasswordGenerator } from "@test/commerce/password-generator";
 import { Test, TestingModule } from "@nestjs/testing";
-import type { INestApplication } from "@nestjs/common";
+import { HttpStatus, INestApplication } from "@nestjs/common";
 import type { IssueSellerToken } from "@src/commerce/query/issue-seller-token";
 import type { CreateSellerCommand } from "@src/commerce/command/create-seller-command";
 
@@ -81,7 +81,7 @@ describe("POST /seller/issueToken", () => {
 
     // Assert
     expect(response.status)
-      .toBe(200);
+      .toBe(HttpStatus.OK);
   });
 
   it("올바르게_요청하면_접근_토큰을_반환한다", async() => {
@@ -180,7 +180,7 @@ describe("POST /seller/issueToken", () => {
 
     // Assert
     expect(response.status)
-      .toBe(400);
+      .toBe(HttpStatus.BAD_REQUEST);
   });
 
   it("잘못된_비밀번호가_사용되면_400_Bad_Request_상태코드를_반환한다", async() => {
@@ -211,6 +211,6 @@ describe("POST /seller/issueToken", () => {
 
     // Assert
     expect(response.status)
-      .toBe(400);
+      .toBe(HttpStatus.BAD_REQUEST);
   });
 });
