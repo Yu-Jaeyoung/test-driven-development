@@ -1,10 +1,9 @@
-import { beforeAll, describe, it, expect } from "bun:test";
+import { beforeAll, describe, expect, it } from "bun:test";
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { AppModule } from "@src/app.module";
 import { TestFixture } from "@test/commerce/api/test-fixture";
 import { RegisterProductCommandGenerator } from "@test/commerce/register-product-command-generator";
-import { log } from "console";
 import * as path from "node:path";
 
 
@@ -82,7 +81,6 @@ describe("POST /seller/products", () => {
 
     // Assert
     const actual = response.headers.location;
-
 
     expect(actual)
       .toBeDefined();

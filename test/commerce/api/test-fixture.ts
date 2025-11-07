@@ -7,6 +7,7 @@ import { UsernameGenerator } from "@test/commerce/username-generator";
 import { PasswordGenerator } from "@test/commerce/password-generator";
 import { IssueSellerToken } from "@src/commerce/query/issue-seller-token";
 import { CreateSellerCommand } from "@src/commerce/command/create-seller-command";
+import { RegisterProductCommandGenerator } from "@test/commerce/register-product-command-generator";
 
 const { generateEmail } = EmailGenerator;
 const { generateUsername } = UsernameGenerator;
@@ -155,5 +156,15 @@ export class TestFixture {
     const password = generatePassword();
     await this.createShopper(email, generateUsername(), password);
     await this.setShopperAsDefaultUser(email, password);
+  }
+
+  async registerProduct() {
+    const response = await this.client()
+                               .post("/seller/products")
+                               .send(RegisterProductCommandGenerator.generateRegisterProductCommand());
+
+    const path = response.headers["location"];
+    return path.split("/")
+               .at(-1);
   }
 }

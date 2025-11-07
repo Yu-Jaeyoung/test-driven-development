@@ -1,5 +1,5 @@
-import type { Request, Response } from "express";
-import { Body, Controller, HttpStatus, Post, Req, Res } from "@nestjs/common";
+import type { Response } from "express";
+import { Body, Controller, Get, HttpStatus, Post, Res } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { Seller } from "@src/commerce/seller";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -14,22 +14,11 @@ export class SellerProductsController {
 
   @Post("/products")
   async registerProduct(
-    @Req()
-    req: Request & { user: { sub: string } },
     @Res()
     res: Response,
     @Body()
     command: RegisterProductCommand,
   ) {
-    const seller: Seller | null = await this.sellerRepository.findOneBy({
-      id: req.user.sub,
-    });
-
-    if (!seller) {
-      return res.status(HttpStatus.FORBIDDEN)
-                .send();
-    }
-
     if (this.isValidUri(command.imageUri) == false) {
       return res.status(HttpStatus.BAD_REQUEST)
                 .send();
@@ -42,7 +31,16 @@ export class SellerProductsController {
               .send();
   }
 
+  @Get("/products/:id")
+  async findProduct(
+    @Res()
+    res: Response) {
+    return res.status(HttpStatus.OK)
+              .send();
+  }
+
   private isValidUri(value: string) {
+
     try {
       new URL(value);
       return true;

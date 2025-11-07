@@ -48,6 +48,6 @@ export class SellerIssueTokenController {
   }
 
   private composeToken(seller: Seller) {
-    return { accessToken: this.jwtService.sign({ sub: seller.id }) };
+    return { accessToken: this.jwtService.sign({ sub: seller.id, scp: "seller" }) };
   }
 }
