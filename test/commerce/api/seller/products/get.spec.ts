@@ -4,6 +4,8 @@ import { TestFixture } from "@test/commerce/api/test-fixture";
 import { Test, TestingModule } from "@nestjs/testing";
 import { AppModule } from "@src/app.module";
 import { Product } from "@src/commerce/product";
+import type { RegisterProductCommand } from "@src/commerce/command/register-product-command";
+import { RegisterProductCommandGenerator } from "@test/commerce/register-product-command-generator";
 
 describe("GET /seller/products", () => {
   let app: INestApplication;
@@ -77,5 +79,54 @@ describe("GET /seller/products", () => {
     expect(actual.items.map((item: Product) => item.id))
       .not
       .toContainValue(unexpectedId);
+  });
+
+  it("상품_정보를_올바르게_반환한다", async() => {
+    // Arrange
+    await fixture.createSellerThenSetAsDefaultUser();
+    const command: RegisterProductCommand = RegisterProductCommandGenerator.generateRegisterProductCommand();
+    await fixture.registerProduct(command);
+
+    // Act
+    const response = await fixture.client()
+                                  .get(`/seller/products`)
+                                  .send();
+
+    const actual: SellerProductView = response.body.items[0];
+
+    // Assert
+    expect(actual)
+      .toBeDefined();
+
+    expect(actual)
+      .toMatchObject({
+        name: command.name,
+        imageUri: command.imageUri,
+        description: command.description,
+        priceAmount: command.priceAmount,
+        stockQuantity: command.stockQuantity,
+      });
+  });
+
+  it("상품_등록_시각을_올바르게_반환한다", async() => {
+    // Arrange
+    await fixture.createSellerThenSetAsDefaultUser();
+    const referenceTime = new Date();
+    await fixture.registerProduct();
+
+    // Act
+    const response = await fixture.client()
+                                  .get(`/seller/products`)
+                                  .send();
+
+    const actual = response.body;
+
+    // Assert
+    expect(actual)
+      .toBeDefined();
+
+    const registeredTimeUtc = new Date(actual.items[0].registeredTimeUtc);
+    expect(registeredTimeUtc.getTime())
+      .toBeGreaterThanOrEqual(referenceTime.getTime());
   });
 });

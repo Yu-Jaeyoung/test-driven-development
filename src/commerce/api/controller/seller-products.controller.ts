@@ -66,7 +66,14 @@ export class SellerProductsController {
                 .send();
     }
 
-    const sellerProductView: SellerProductView = {
+    const sellerProductView: SellerProductView = this.convertToView(product);
+
+    return res.status(HttpStatus.OK)
+              .send(sellerProductView);
+  }
+
+  private convertToView(product: Product) {
+    return {
       id: product.id,
       name: product.name,
       imageUri: product.imageUri,
@@ -75,9 +82,6 @@ export class SellerProductsController {
       stockQuantity: product.stockQuantity,
       registeredTimeUtc: product.registeredTimeUtc,
     };
-
-    return res.status(HttpStatus.OK)
-              .send(sellerProductView);
   }
 
   private isValidUri(value: string) {
@@ -104,15 +108,7 @@ export class SellerProductsController {
     );
 
     const carrier: ArrayCarrier<SellerProductView> = {
-      items: products.map((product) => ({
-        id: product.id,
-        name: undefined,
-        imageUri: undefined,
-        description: undefined,
-        priceAmount: undefined,
-        stockQuantity: undefined,
-        registeredTimeUtc: new Date(),
-      })),
+      items: products.map((product) => this.convertToView(product)),
     };
 
     return res.status(HttpStatus.OK)
