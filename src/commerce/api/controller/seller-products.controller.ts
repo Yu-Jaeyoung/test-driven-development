@@ -107,6 +107,11 @@ export class SellerProductsController {
       },
     );
 
+    products.sort((
+      productA,
+      productB,
+    ) => productB.registeredTimeUtc.getTime() - productA.registeredTimeUtc.getTime());
+
     const carrier: ArrayCarrier<SellerProductView> = {
       items: products.map((product) => this.convertToView(product)),
     };

@@ -129,4 +129,26 @@ describe("GET /seller/products", () => {
     expect(registeredTimeUtc.getTime())
       .toBeGreaterThanOrEqual(referenceTime.getTime());
   });
+
+  it("상품_목록을_등록_시점_역순으로_정렬한다", async() => {
+    // Arrange
+    await fixture.createSellerThenSetAsDefaultUser();
+    await fixture.registerProducts();
+
+    // Act
+    const response = await fixture.client()
+                                  .get(`/seller/products`)
+                                  .send();
+
+    const actual = response.body;
+
+    // Assert
+    expect(actual)
+      .toBeDefined();
+
+    expect(actual.items.map((item: Product) => item.registeredTimeUtc))
+      .toEqual([ ...actual.items.map((item: Product) => item.registeredTimeUtc) ]
+        .sort()
+        .reverse());
+  });
 });
