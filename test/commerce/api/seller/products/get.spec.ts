@@ -57,4 +57,25 @@ describe("GET /seller/products", () => {
     expect(actual.items.map((item: Product) => item.id))
       .toContainAllValues(ids);
   });
+
+  it("다른_판매자가_등록한_상품이_포함되지_않는다", async() => {
+    // Arrange
+    await fixture.createSellerThenSetAsDefaultUser();
+    const unexpectedId = await fixture.registerProduct();
+
+    await fixture.createSellerThenSetAsDefaultUser();
+    await fixture.registerProducts();
+
+    // Act
+    const response = await fixture.client()
+                                  .get(`/seller/products`)
+                                  .send();
+
+    const actual = response.body;
+
+    // Assert
+    expect(actual.items.map((item: Product) => item.id))
+      .not
+      .toContainValue(unexpectedId);
+  });
 });

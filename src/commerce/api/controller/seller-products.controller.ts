@@ -92,10 +92,16 @@ export class SellerProductsController {
 
   @Get("/products")
   async getProducts(
+    @Req()
+    req: Request & { user: { sub: string } },
     @Res()
     res: Response,
   ) {
-    const products = await this.productRepository.find();
+    const products = await this.productRepository.findBy(
+      {
+        sellerId: req.user.sub,
+      },
+    );
 
     const carrier: ArrayCarrier<SellerProductView> = {
       items: products.map((product) => ({
