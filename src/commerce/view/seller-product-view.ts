@@ -5,5 +5,5 @@ interface SellerProductView {
   description: string | undefined;
   priceAmount: string | undefined;
   stockQuantity: number | undefined;
-  LocalDateTime: string | undefined; // TODO: Check
+  registeredTimeUtc: Date;
 }

@@ -36,6 +36,7 @@ export class SellerProductsController {
       description: command.description,
       priceAmount: BigInt(command.priceAmount),
       stockQuantity: command.stockQuantity,
+      registeredTimeUtc: new Date()
     });
 
     const url = `/seller/products/${ id }`;
@@ -71,7 +72,7 @@ export class SellerProductsController {
       description: product.description,
       priceAmount: product.priceAmount.toString(),
       stockQuantity: product.stockQuantity,
-      LocalDateTime: undefined,
+      registeredTimeUtc: product.registeredTimeUtc,
     };
 
     return res.status(HttpStatus.OK)

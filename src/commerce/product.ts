@@ -25,4 +25,7 @@ export class Product {
 
   @Column()
   stockQuantity: number;
+
+  @Column()
+  registeredTimeUtc: Date;
 }

@@ -144,5 +144,29 @@ describe("GET /seller/products/:id", () => {
     expect(actual.stockQuantity)
       .toEqual(command.stockQuantity);
   });
-})
-;
+
+  it("상품_등록_시각을_올바르게_반환한다", async() => {
+    // Arrange
+    await fixture.createSellerThenSetAsDefaultUser();
+    const id = await fixture.registerProduct();
+
+    const referenceTime = new Date();
+
+    // Act
+    const response = await fixture.client()
+                                  .get(`/seller/products/${ id }`)
+                                  .send();
+
+    // Assert
+    const actual: SellerProductView = {
+      ...response.body,
+    };
+
+    const actualTime = new Date(actual.registeredTimeUtc).getTime();
+
+    // Assert
+    expect(actualTime)
+      .toBeCloseTo(referenceTime.getTime(), -3);
+
+  });
+});
