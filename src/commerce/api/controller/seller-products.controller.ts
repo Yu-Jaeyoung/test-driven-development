@@ -4,6 +4,7 @@ import type { RegisterProductCommand } from "@src/commerce/command/register-prod
 import { Product } from "@src/commerce/product";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
+import { ArrayCarrier } from "@src/commerce/view/array-carrier";
 
 @Controller("/seller")
 export class SellerProductsController {
@@ -36,7 +37,7 @@ export class SellerProductsController {
       description: command.description,
       priceAmount: BigInt(command.priceAmount),
       stockQuantity: command.stockQuantity,
-      registeredTimeUtc: new Date()
+      registeredTimeUtc: new Date(),
     });
 
     const url = `/seller/products/${ id }`;
@@ -87,5 +88,28 @@ export class SellerProductsController {
     } catch (error) {
       return false;
     }
+  }
+
+  @Get("/products")
+  async getProducts(
+    @Res()
+    res: Response,
+  ) {
+    const products = await this.productRepository.find();
+
+    const carrier: ArrayCarrier<SellerProductView> = {
+      items: products.map((product) => ({
+        id: product.id,
+        name: undefined,
+        imageUri: undefined,
+        description: undefined,
+        priceAmount: undefined,
+        stockQuantity: undefined,
+        registeredTimeUtc: new Date(),
+      })),
+    };
+
+    return res.status(HttpStatus.OK)
+              .send(carrier);
   }
 }

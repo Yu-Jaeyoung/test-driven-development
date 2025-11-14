@@ -170,4 +170,12 @@ export class TestFixture {
 
     return path.split("/seller/products/")[1];
   }
+
+  async registerProducts() {
+    return Array.of(
+      await this.registerProduct(),
+      await this.registerProduct(),
+      await this.registerProduct(),
+    );
+  }
 }

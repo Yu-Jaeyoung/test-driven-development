@@ -27,7 +27,6 @@ describe("GET /seller/products/:id", () => {
 
     const id = await fixture.registerProduct();
 
-    console.info(id);
     // Act
     const response = await fixture.client()
                                   .get(`/seller/products/${ id }`)
