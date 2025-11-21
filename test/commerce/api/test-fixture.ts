@@ -9,6 +9,8 @@ import { EmailGenerator } from "@test/commerce/email-generator";
 import { UsernameGenerator } from "@test/commerce/username-generator";
 import { PasswordGenerator } from "@test/commerce/password-generator";
 import { RegisterProductCommandGenerator } from "@test/commerce/register-product-command-generator";
+import { Product } from "@src/commerce/product";
+import { Repository } from "typeorm";
 
 const { generateEmail } = EmailGenerator;
 const { generateUsername } = UsernameGenerator;
@@ -24,8 +26,10 @@ type AuthClient = {
 export class TestFixture {
   private testClient: AuthClient;
 
-  constructor(private app: INestApplication) {
-    this.app = app;
+  constructor(
+    private app: INestApplication,
+    private readonly productRepository?: Repository<Product>,
+  ) {
     this.testClient = request(this.app.getHttpServer());
   }
 
@@ -47,7 +51,6 @@ export class TestFixture {
     await this.testClient
               .post("/shopper/signUp")
               .send(command);
-
   }
 
   async issueShopperToken(
@@ -171,11 +174,25 @@ export class TestFixture {
     return path.split("/seller/products/")[1];
   }
 
-  async registerProducts() {
+  async registerProducts(count?: number) {
+    if (count) {
+      const ids: string[] = [];
+
+      for (let i = 0; i < count; i++) {
+        ids.push(await this.registerProduct());
+      }
+
+      return ids;
+    }
+
     return Array.of(
       await this.registerProduct(),
       await this.registerProduct(),
       await this.registerProduct(),
     );
+  }
+
+  async deleteAllProducts() {
+    await this.productRepository?.deleteAll();
   }
 }

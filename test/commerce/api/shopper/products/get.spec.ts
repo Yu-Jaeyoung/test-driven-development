@@ -3,18 +3,30 @@ import { HttpStatus, INestApplication } from "@nestjs/common";
 import { TestFixture } from "@test/commerce/api/test-fixture";
 import { Test, TestingModule } from "@nestjs/testing";
 import { AppModule } from "@src/app.module";
+import type { PageCarrier } from "@src/commerce/result/page-carrier";
+import type { ProductView } from "@src/commerce/view/product-view";
+import { Repository } from "typeorm";
+import { Product } from "@src/commerce/product";
+import { getRepositoryToken } from "@nestjs/typeorm";
+
+const PAGE_SIZE = 10;
 
 describe("GET /shopper/products", () => {
   let app: INestApplication;
   let fixture: TestFixture;
+  let productRepository: Repository<Product>;
 
   beforeAll(async() => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
                                                      imports: [ AppModule ],
                                                    })
                                                    .compile();
+
     app = moduleFixture.createNestApplication();
-    fixture = new TestFixture(app);
+    // productRepository = app.get<Repository<Product>>(getRepositoryToken(Product));
+    productRepository = moduleFixture.get(getRepositoryToken(Product));
+    fixture = new TestFixture(app, productRepository);
+
     await app.init();
   });
 
@@ -42,5 +54,31 @@ describe("GET /shopper/products", () => {
     // Assert
     expect(response.status)
       .toBe(HttpStatus.FORBIDDEN);
+  });
+
+  it("첫_번째_페이지의_상품을_반환한다", async() => {
+    // Arrange
+    await fixture.deleteAllProducts();
+
+    await fixture.createSellerThenSetAsDefaultUser();
+    const ids = await fixture.registerProducts(PAGE_SIZE);
+    await fixture.createShopperThenSetAsDefaultUser();
+
+    // Act
+    const response = await fixture.client()
+                                  .get("/shopper/products");
+
+    // Assert
+    const actual: PageCarrier<ProductView> = response.body;
+    expect(actual)
+      .toBeDefined();
+
+    const actualIds = actual.items.map(item => item.id);
+    expect(actualIds.length)
+      .toBe(ids.length);
+    expect(actualIds.map(String)
+                    .sort())
+      .toEqual(ids.map(String)
+                  .sort());
   });
 });
