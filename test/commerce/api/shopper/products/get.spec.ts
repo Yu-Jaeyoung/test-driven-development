@@ -8,6 +8,8 @@ import type { ProductView } from "@src/commerce/view/product-view";
 import { Repository } from "typeorm";
 import { Product } from "@src/commerce/product";
 import { getRepositoryToken } from "@nestjs/typeorm";
+import type { RegisterProductCommand } from "@src/commerce/command/register-product-command";
+import { RegisterProductCommandGenerator } from "@test/commerce/register-product-command-generator";
 
 const PAGE_SIZE = 10;
 
@@ -80,5 +82,62 @@ describe("GET /shopper/products", () => {
                     .sort())
       .toEqual(ids.map(String)
                   .sort());
+  });
+
+  it("상품_목록을_등록_시점_역순으로_정렬한다", async() => {
+    // Arrange
+    await fixture.deleteAllProducts();
+
+    await fixture.createSellerThenSetAsDefaultUser();
+
+    const id1 = await fixture.registerProduct();
+    const id2 = await fixture.registerProduct();
+    const id3 = await fixture.registerProduct();
+
+    await fixture.createShopperThenSetAsDefaultUser();
+
+    // Act
+    const response = await fixture.client()
+                                  .get("/shopper/products");
+
+    // Assert
+    const actual: PageCarrier<ProductView> = response.body;
+
+    expect(actual)
+      .toBeDefined();
+
+    const actualIds = actual.items.map(item => item.id);
+    expect(actualIds.map(String))
+      .toEqual([ id3, id2, id1 ].map(String));
+  });
+
+  it("상품_정보를_올바르게_반환한다", async() => {
+    // Arrange
+    await fixture.deleteAllProducts();
+
+    await fixture.createSellerThenSetAsDefaultUser();
+    const command: RegisterProductCommand = RegisterProductCommandGenerator.generateRegisterProductCommand();
+    await fixture.registerProduct(command);
+
+    await fixture.createShopperThenSetAsDefaultUser();
+
+    // Act
+    const response = await fixture.client()
+                                  .get("/shopper/products");
+
+    // Assert
+    const actual = response.body.items[0];
+
+    expect(actual)
+      .toBeDefined();
+
+    expect(actual)
+      .toMatchObject({
+        name: command.name,
+        imageUri: command.imageUri,
+        description: command.description,
+        priceAmount: command.priceAmount,
+        stockQuantity: command.stockQuantity,
+      });
   });
 });

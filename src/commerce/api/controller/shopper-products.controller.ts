@@ -21,15 +21,22 @@ export class ShopperProductsController {
   ) {
     const products = await this.productRepository.find();
 
+    products.sort((
+        productA,
+        productB,
+      ) =>
+        productB.dataKey - productA.dataKey,
+    );
+
     const pageCarrier: PageCarrier<ProductView> = {
       items: products.map(product => ({
         id: product.id,
-        name: undefined,
+        name: product.name,
         seller: undefined,
-        imageUri: undefined,
-        description: undefined,
-        priceAmount: undefined,
-        stockQuantity: 0,
+        imageUri: product.imageUri,
+        description: product.description,
+        priceAmount: product.priceAmount.toString(),
+        stockQuantity: product.stockQuantity,
       })),
       continuationToken: undefined,
     };
