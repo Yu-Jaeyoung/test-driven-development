@@ -49,6 +49,6 @@ export class ShopperIssueTokenController {
   }
 
   private composeToken(shopper: Shopper) {
-    return { accessToken: this.jwtService.sign({ sub: shopper.id }) };
+    return { accessToken: this.jwtService.sign({ sub: shopper.id, scp: "shopper" }) };
   }
 }
