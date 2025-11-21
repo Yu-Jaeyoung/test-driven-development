@@ -140,4 +140,31 @@ describe("GET /shopper/products", () => {
         stockQuantity: command.stockQuantity,
       });
   });
+
+  it("판매자_정보를_올바르게_반환한다", async() => {
+    // Arrange
+    await fixture.deleteAllProducts();
+
+    await fixture.createSellerThenSetAsDefaultUser();
+    const seller = await fixture.getSeller();
+
+    await fixture.registerProduct();
+
+    await fixture.createShopperThenSetAsDefaultUser();
+
+    // Act
+    const response = await fixture.client()
+                                  .get("/shopper/products");
+
+    // Assert
+    const actual = response.body.items[0].seller;
+
+    expect(actual)
+      .toBeDefined();
+
+    expect(actual.id)
+      .toEqual(seller.body.id);
+    expect(actual.username)
+      .toEqual(seller.body.username);
+  });
 });

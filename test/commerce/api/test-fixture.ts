@@ -195,4 +195,9 @@ export class TestFixture {
   async deleteAllProducts() {
     await this.productRepository?.deleteAll();
   }
+
+  async getSeller() {
+    return this.client()
+               .get("/seller/me");
+  }
 }
