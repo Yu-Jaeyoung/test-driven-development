@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
+@Index([ "sellerId" ])
 export class Product {
   @PrimaryGeneratedColumn()
   dataKey: number;
