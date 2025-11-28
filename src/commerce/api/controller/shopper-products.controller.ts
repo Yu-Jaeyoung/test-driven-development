@@ -24,18 +24,18 @@ export class ShopperProductsController {
   ) {
     const pageSize = 4;
 
-    const dataKey = continuationToken ? parseInt(Buffer.from(continuationToken, "base64")
-                                                       .toString(), 10) : null;
-
     const qb = this.productRepository.createQueryBuilder("p")
                    .innerJoinAndSelect(Seller, "s", "p.sellerId = s.id");
 
-    if (dataKey !== null) {
+    if (continuationToken) {
+      const dataKey = parseInt(Buffer.from(continuationToken, "base64")
+                                     .toString(), 10);
+
       qb.where("p.dataKey <= :dataKey", { dataKey });
     }
 
     const products = await qb.orderBy("p.dataKey", "DESC")
-                             .limit(pageSize + 1)
+                             .take(pageSize + 1)
                              .getRawMany();
 
     if (products.length === 0) {
@@ -43,7 +43,7 @@ export class ShopperProductsController {
                 .send();
     }
 
-    const next = products.length <= pageSize ? undefined : products[products.length - 1].p_dataKey;
+    const next = products.length > pageSize ? products[pageSize].p_dataKey : undefined;
 
     const pageCarrier: PageCarrier<ProductView> = {
       items: products
@@ -60,14 +60,14 @@ export class ShopperProductsController {
           priceAmount: product.p_priceAmount.toString(),
           stockQuantity: product.p_stockQuantity,
         })),
-      continuationToken: await this.encodeCursor(next),
+      continuationToken: next ? await this.encodeCursor(next) : undefined,
     };
 
     return res.status(HttpStatus.OK)
               .send(pageCarrier);
   };
 
-  async encodeCursor(dataKey: string) {
+  async encodeCursor(dataKey: number) {
     if (!dataKey) {
       return undefined;
     }
