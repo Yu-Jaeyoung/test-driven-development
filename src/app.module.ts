@@ -43,7 +43,7 @@ import { ShopperProductsController } from "@src/commerce/api/controller/shopper-
     SellerMeController,
     ShopperMeController,
     SellerProductsController,
-    ShopperProductsController
+    ShopperProductsController,
   ],
   providers: [
     {

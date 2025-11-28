@@ -11,7 +11,7 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import type { RegisterProductCommand } from "@src/commerce/command/register-product-command";
 import { RegisterProductCommandGenerator } from "@test/commerce/register-product-command-generator";
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 4;
 
 describe("GET /shopper/products", () => {
   let app: INestApplication;
@@ -193,6 +193,61 @@ describe("GET /shopper/products", () => {
     expect(actual.items.map(item => item.id)
                  .reverse())
       .toEqual(ids);
+  });
 
+  it.each([ 1, PAGE_SIZE ])("마지막_페이지를_올바르게_반환한다", async(lastPageSize: number) => {
+    // Arrange
+    await fixture.deleteAllProducts();
+
+    await fixture.createSellerThenSetAsDefaultUser();
+    const ids = await fixture.registerProducts(lastPageSize);
+    await fixture.registerProducts(PAGE_SIZE * 2);
+
+    await fixture.createShopperThenSetAsDefaultUser();
+    const token = await fixture.consumeTwoProductPage();
+
+    // Act
+    const response = await fixture.client()
+                                  .get("/shopper/products?continuationToken=" + token);
+
+    // Assert
+    const actual: PageCarrier<ProductView> = response.body;
+
+    expect(actual)
+      .toBeDefined();
+
+    expect(actual.items.map(item => item.id))
+      .toEqual(ids.reverse());
+
+    expect(actual.continuationToken)
+      .toBeUndefined();
+  });
+
+  it("continuationToken_매개변수에_빈_문자열이_지정되면_첫_번째_페이지를_반환한다", async() => {
+    // Arrange
+    await fixture.deleteAllProducts();
+
+    await fixture.createSellerThenSetAsDefaultUser();
+    await fixture.registerProducts(PAGE_SIZE);
+    const ids = await fixture.registerProducts(PAGE_SIZE);
+
+    await fixture.createShopperThenSetAsDefaultUser();
+
+    // Act
+    const response = await fixture.client()
+                                  .get("/shopper/products?continuationToken=");
+
+    // Assert
+    expect(response.status)
+      .toBe(HttpStatus.OK);
+
+    const actual: PageCarrier<ProductView> = response.body;
+
+    expect(actual)
+      .not
+      .toBeUndefined();
+
+    expect(actual.items.map(item => item.id))
+      .toEqual(ids.reverse());
   });
 });

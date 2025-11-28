@@ -207,4 +207,13 @@ export class TestFixture {
 
     return response.body.continuationToken;
   }
+
+  async consumeTwoProductPage() {
+    const token = await this.consumeProductPage();
+
+    const response = await this.client()
+                               .get("/shopper/products?continuationToken=" + token);
+
+    return response.body.continuationToken;
+  }
 }

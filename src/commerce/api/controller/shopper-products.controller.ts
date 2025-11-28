@@ -22,28 +22,30 @@ export class ShopperProductsController {
     @Query("continuationToken")
     continuationToken?: string,
   ) {
-    const pageSize = 5;
+    const pageSize = 4;
 
     const dataKey = continuationToken ? parseInt(Buffer.from(continuationToken, "base64")
                                                        .toString(), 10) : null;
 
-    console.log("Received continuationToken:", dataKey);
+    const qb = this.productRepository.createQueryBuilder("p")
+                   .innerJoinAndSelect(Seller, "s", "p.sellerId = s.id");
 
-    const products = await this.productRepository.createQueryBuilder("p")
-                               .innerJoinAndSelect(Seller, "s", "p.sellerId = s.id")
-                               .where(dataKey ? "p.dataKey <= :dataKey" : "1=1", { dataKey })
-                               .orderBy("p.dataKey", "DESC")
-                               .limit(pageSize + 1)
-                               .getRawMany();
+    if (dataKey !== null) {
+      qb.where("p.dataKey <= :dataKey", { dataKey });
+    }
+
+    const products = await qb.orderBy("p.dataKey", "DESC")
+                             .limit(pageSize + 1)
+                             .getRawMany();
 
     if (products.length === 0) {
       return res.status(HttpStatus.OK)
                 .send();
     }
 
-    const next = products[products.length - 1].p_dataKey;
+    const next = products.length <= pageSize ? undefined : products[products.length - 1].p_dataKey;
 
-    // console.log("next:", next);
+    console.log(products);
 
     const pageCarrier: PageCarrier<ProductView> = {
       items: products
@@ -63,13 +65,15 @@ export class ShopperProductsController {
       continuationToken: await this.encodeCursor(next),
     };
 
-    // console.log("pageCarrier:", pageCarrier);
-
     return res.status(HttpStatus.OK)
               .send(pageCarrier);
   };
 
-  async encodeCursor(dataKey: string): Promise<string> {
+  async encodeCursor(dataKey: string) {
+    if (!dataKey) {
+      return undefined;
+    }
+
     return Buffer.from(dataKey.toString())
                  .toString("base64");
   }
