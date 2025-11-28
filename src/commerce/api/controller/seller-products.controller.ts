@@ -5,6 +5,7 @@ import { Product } from "@src/commerce/product";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ArrayCarrier } from "@src/commerce/view/array-carrier";
+import { InvalidCommandException } from "@src/commerce/commandmodel/invalid-command-exception";
 
 @Controller("/seller")
 export class SellerProductsController {
@@ -23,8 +24,7 @@ export class SellerProductsController {
     command: RegisterProductCommand,
   ) {
     if (this.isValidUri(command.imageUri) == false) {
-      return res.status(HttpStatus.BAD_REQUEST)
-                .send();
+      throw new InvalidCommandException();
     }
 
     const id = crypto.randomUUID();

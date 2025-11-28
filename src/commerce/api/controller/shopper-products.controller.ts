@@ -45,8 +45,6 @@ export class ShopperProductsController {
 
     const next = products.length <= pageSize ? undefined : products[products.length - 1].p_dataKey;
 
-    console.log(products);
-
     const pageCarrier: PageCarrier<ProductView> = {
       items: products
         .slice(0, pageSize)
