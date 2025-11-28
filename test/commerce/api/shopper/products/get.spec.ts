@@ -11,7 +11,7 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import type { RegisterProductCommand } from "@src/commerce/command/register-product-command";
 import { RegisterProductCommandGenerator } from "@test/commerce/register-product-command-generator";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 5;
 
 describe("GET /shopper/products", () => {
   let app: INestApplication;
@@ -166,5 +166,33 @@ describe("GET /shopper/products", () => {
       .toEqual(seller.body.id);
     expect(actual.username)
       .toEqual(seller.body.username);
+  });
+
+  it("두_번째_페이지를_올바르게_반환한다", async() => {
+    // Arrange
+    await fixture.deleteAllProducts();
+
+    await fixture.createSellerThenSetAsDefaultUser();
+    await fixture.registerProducts(PAGE_SIZE / 2);
+    const ids = await fixture.registerProducts(PAGE_SIZE);
+
+    await fixture.registerProducts(PAGE_SIZE);
+
+    await fixture.createShopperThenSetAsDefaultUser();
+
+    const token = await fixture.consumeProductPage();
+
+    // Act
+    const response = await fixture.client()
+                                  .get("/shopper/products?continuationToken=" + token);
+
+    // Assert
+    const actual: PageCarrier<ProductView> = response.body;
+    expect(actual)
+      .toBeDefined();
+    expect(actual.items.map(item => item.id)
+                 .reverse())
+      .toEqual(ids);
+
   });
 });

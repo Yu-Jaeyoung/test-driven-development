@@ -200,4 +200,11 @@ export class TestFixture {
     return this.client()
                .get("/seller/me");
   }
+
+  async consumeProductPage() {
+    const response = await this.client()
+                               .get("/shopper/products");
+
+    return response.body.continuationToken;
+  }
 }
