@@ -5,7 +5,8 @@ import { Product } from "@src/commerce/product";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ArrayCarrier } from "@src/commerce/view/array-carrier";
-import { InvalidCommandException } from "@src/commerce/commandmodel/invalid-command-exception";
+import { RegisterProductCommandExecutor } from "@src/commerce/commandmodel/register-product-command-executor";
+import type { Consumer } from "@src/common/types";
 
 @Controller("/seller")
 export class SellerProductsController {
@@ -23,22 +24,12 @@ export class SellerProductsController {
     @Body()
     command: RegisterProductCommand,
   ) {
-    if (this.isValidUri(command.imageUri) == false) {
-      throw new InvalidCommandException();
-    }
-
     const id = crypto.randomUUID();
+    const sellerId = req.user.sub;
+    const saveProduct: Consumer<Product> = async(product) => await this.productRepository.save(product);
 
-    await this.productRepository.save({
-      id,
-      sellerId: req.user.sub,
-      name: command.name,
-      imageUri: command.imageUri,
-      description: command.description,
-      priceAmount: BigInt(command.priceAmount),
-      stockQuantity: command.stockQuantity,
-      registeredTimeUtc: new Date(),
-    });
+    const executor = new RegisterProductCommandExecutor(saveProduct);
+    await executor.execute(id, sellerId, command);
 
     const url = `/seller/products/${ id }`;
 
@@ -82,16 +73,6 @@ export class SellerProductsController {
       stockQuantity: product.stockQuantity,
       registeredTimeUtc: product.registeredTimeUtc,
     };
-  }
-
-  private isValidUri(value: string) {
-
-    try {
-      new URL(value);
-      return true;
-    } catch (error) {
-      return false;
-    }
   }
 
   @Get("/products")
