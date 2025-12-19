@@ -6,7 +6,7 @@ import { beforeAll, describe, expect, it } from "bun:test";
 import { EmailGenerator } from "@test/commerce/email-generator";
 import { UsernameGenerator } from "@test/commerce/username-generator";
 import { PasswordGenerator } from "@test/commerce/password-generator";
-import { CreateShopperCommand } from "@src/commerce/command/create-shopper-command";
+import type { CreateShopperCommand } from "@src/commerce/command/create-shopper-command";
 import { IssueShopperToken } from "@src/commerce/query/issue-shopper-token";
 
 const { generateEmail } = EmailGenerator;

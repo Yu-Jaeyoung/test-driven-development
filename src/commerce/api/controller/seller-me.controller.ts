@@ -1,10 +1,13 @@
 import type { Request, Response } from "express";
-
+import type { SellerMeView } from "@src/commerce/view/seller-me-view";
 import { AuthGuard } from "@src/commerce/auth.guard";
 import { Controller, Get, HttpStatus, Req, Res, UseGuards } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Seller } from "@src/commerce/seller";
 import { Repository } from "typeorm";
+import { EmailGenerator } from "@test/commerce/email-generator";
+
+const { generateEmail } = EmailGenerator;
 
 @Controller("/seller")
 export class SellerMeController {
@@ -42,6 +45,7 @@ export class SellerMeController {
       id: req.user.sub,
       email: seller.email,
       username: seller.username,
+      contactEmail: generateEmail(),
     };
 
     return res.send(sellerInfo);

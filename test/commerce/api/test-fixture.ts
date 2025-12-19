@@ -121,6 +121,7 @@ export class TestFixture {
       email,
       username,
       password,
+      contactEmail: generateEmail(),
     };
 
     this.ensureSuccessful(

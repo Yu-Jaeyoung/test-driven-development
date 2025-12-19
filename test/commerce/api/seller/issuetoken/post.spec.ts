@@ -63,6 +63,7 @@ describe("POST /seller/issueToken", () => {
       email,
       username: generateUsername(),
       password,
+      contactEmail: generateEmail(),
     };
 
     const tokenData: IssueSellerToken = {
@@ -93,6 +94,7 @@ describe("POST /seller/issueToken", () => {
       email,
       username: generateUsername(),
       password,
+      contactEmail: generateEmail(),
     };
 
     const tokenData: IssueSellerToken = {
@@ -126,6 +128,7 @@ describe("POST /seller/issueToken", () => {
       email,
       username: generateUsername(),
       password,
+      contactEmail: generateEmail(),
     };
 
     const tokenData: IssueSellerToken = {
@@ -193,6 +196,7 @@ describe("POST /seller/issueToken", () => {
       email,
       username: generateUsername(),
       password,
+      contactEmail: generateEmail(),
     };
 
     const tokenData: IssueSellerToken = {

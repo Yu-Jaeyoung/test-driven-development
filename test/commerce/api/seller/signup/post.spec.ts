@@ -37,6 +37,7 @@ describe("POST /seller/signUp", () => {
       email: generateEmail(),
       username: generateUsername(),
       password: "password",
+      contactEmail: generateEmail(),
     };
 
     // Act
@@ -55,6 +56,7 @@ describe("POST /seller/signUp", () => {
       email: undefined,
       username: generateUsername(),
       password: "password",
+      contactEmail: generateEmail(),
     };
 
     // Act
@@ -79,6 +81,7 @@ describe("POST /seller/signUp", () => {
       email,
       username: generateUsername(),
       password: "password",
+      contactEmail: generateEmail(),
     };
 
     // Act
@@ -97,6 +100,7 @@ describe("POST /seller/signUp", () => {
       email: generateEmail(),
       username: undefined,
       password: "password",
+      contactEmail: generateEmail(),
     };
 
     // Act
@@ -122,6 +126,7 @@ describe("POST /seller/signUp", () => {
       email: generateEmail(),
       username,
       password: "password",
+      contactEmail: generateEmail(),
     };
 
     // Act
@@ -146,6 +151,7 @@ describe("POST /seller/signUp", () => {
       email: generateEmail(),
       username,
       password: "password",
+      contactEmail: generateEmail(),
     };
 
     // Act
@@ -164,6 +170,7 @@ describe("POST /seller/signUp", () => {
       email: generateEmail(),
       username: generateUsername(),
       password: undefined,
+      contactEmail: generateEmail(),
     };
 
     // Act
@@ -182,6 +189,7 @@ describe("POST /seller/signUp", () => {
       email: generateEmail(),
       username: generateUsername(),
       password,
+      contactEmail: generateEmail(),
     };
 
     // Act
@@ -254,6 +262,7 @@ describe("POST /seller/signUp", () => {
       email: generateEmail(),
       username: generateUsername(),
       password: generatePassword(),
+      contactEmail: generateEmail(),
     };
 
     // Act

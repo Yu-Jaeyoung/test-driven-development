@@ -39,6 +39,7 @@ export class GetProductPageQueryProcessor {
           seller: {
             id: product.s_id,
             username: product.s_username,
+            contactEmail: "",
           },
           imageUri: product.p_imageUri,
           description: product.p_description,

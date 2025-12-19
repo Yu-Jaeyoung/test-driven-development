@@ -5,7 +5,7 @@ import { Shopper } from "@src/commerce/shopper";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { Test, TestingModule } from "@nestjs/testing";
 import { beforeAll, describe, expect, it } from "bun:test";
-import { CreateShopperCommand } from "@src/commerce/command/create-shopper-command";
+import type { CreateShopperCommand } from "@src/commerce/command/create-shopper-command";
 import { EmailGenerator } from "@test/commerce/email-generator";
 import { UsernameGenerator } from "@test/commerce/username-generator";
 import { PasswordGenerator } from "@test/commerce/password-generator";

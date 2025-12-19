@@ -8,6 +8,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { HttpStatus, INestApplication } from "@nestjs/common";
 import type { CreateSellerCommand } from "@src/commerce/command/create-seller-command";
 import type { IssueSellerToken } from "@src/commerce/query/issue-seller-token";
+import { SellerMeView } from "@src/commerce/view/seller-me-view";
 
 const { generateEmail } = EmailGenerator;
 const { generateUsername } = UsernameGenerator;
@@ -37,6 +38,7 @@ describe("GET /seller/me", () => {
       email,
       username,
       password,
+      contactEmail: generateEmail(),
     };
 
     const tokenData: IssueSellerToken = {
@@ -88,12 +90,14 @@ describe("GET /seller/me", () => {
       email: email1,
       username: username1,
       password: password1,
+      contactEmail: generateEmail(),
     };
 
     const command2: CreateSellerCommand = {
       email: email2,
       username: username2,
       password: password2,
+      contactEmail: generateEmail(),
     };
 
     const token1: IssueSellerToken = {
@@ -149,6 +153,7 @@ describe("GET /seller/me", () => {
       email,
       username,
       password,
+      contactEmail: generateEmail(),
     };
 
     const data: IssueSellerToken = {
@@ -194,6 +199,7 @@ describe("GET /seller/me", () => {
       email,
       username,
       password,
+      contactEmail: generateEmail(),
     };
 
     const tokenData: IssueSellerToken = {
