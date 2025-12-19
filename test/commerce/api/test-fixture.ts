@@ -11,6 +11,7 @@ import { PasswordGenerator } from "@test/commerce/password-generator";
 import { RegisterProductCommandGenerator } from "@test/commerce/register-product-command-generator";
 import { Product } from "@src/commerce/product";
 import { Repository } from "typeorm";
+import { RuntimeException } from "@nestjs/core/errors/exceptions";
 
 const { generateEmail } = EmailGenerator;
 const { generateUsername } = UsernameGenerator;
@@ -48,9 +49,25 @@ export class TestFixture {
       password,
     };
 
-    await this.testClient
-              .post("/shopper/signUp")
-              .send(command);
+    this.ensureSuccessful(
+      await this.testClient.post("/shopper/signUp")
+                .send(command),
+      command,
+    );
+
+  }
+
+  private ensureSuccessful(
+    response: request.Response,
+    command: CreateShopperCommand | CreateSellerCommand,
+  ) {
+    if (!response.ok) {
+      const message = `Request with ${ JSON.stringify(command) } failed with status code ${ response.statusCode }`;
+
+      console.log(command);
+
+      throw new RuntimeException(message);
+    }
   }
 
   async issueShopperToken(
@@ -106,9 +123,11 @@ export class TestFixture {
       password,
     };
 
-    return this.testClient
-               .post("/seller/signUp")
-               .send(command);
+    this.ensureSuccessful(
+      await this.testClient.post("/seller/signUp")
+                .send(command),
+      command,
+    );
   }
 
   async setSellerAsDefaultUser(
