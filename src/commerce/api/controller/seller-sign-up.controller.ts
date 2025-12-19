@@ -37,6 +37,7 @@ export class SellerSignUpController {
         email: command.email,
         username: command.username,
         hashedPassword,
+        contactEmail: command.contactEmail,
       });
     } catch (error) {
       return res.status(HttpStatus.BAD_REQUEST)
@@ -50,7 +51,8 @@ export class SellerSignUpController {
   private isCommandValid(command: CreateSellerCommand): boolean {
     return isEmailValid(command.email)
       && isUsernameValid(command.username)
-      && isPasswordValid(command.password);
+      && isPasswordValid(command.password)
+      && isEmailValid(command.contactEmail);
   }
 }
 

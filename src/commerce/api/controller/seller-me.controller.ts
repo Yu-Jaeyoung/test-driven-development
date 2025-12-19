@@ -45,7 +45,7 @@ export class SellerMeController {
       id: req.user.sub,
       email: seller.email,
       username: seller.username,
-      contactEmail: generateEmail(),
+      contactEmail: seller.contactEmail,
     };
 
     return res.send(sellerInfo);

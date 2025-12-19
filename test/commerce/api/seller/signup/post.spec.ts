@@ -6,7 +6,7 @@ import { beforeAll, describe, expect, it } from "bun:test";
 import { EmailGenerator } from "@test/commerce/email-generator";
 import { UsernameGenerator } from "@test/commerce/username-generator";
 import { PasswordGenerator } from "@test/commerce/password-generator";
-import { invalidPassword } from "@test/commerce/test-data-source";
+import { invalidEmails, invalidPassword } from "@test/commerce/test-data-source";
 import { Seller } from "@src/commerce/seller";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { HttpStatus, INestApplication } from "@nestjs/common";
@@ -276,5 +276,24 @@ describe("POST /seller/signUp", () => {
 
     expect(isMatch)
       .toBe(true);
+  });
+
+  it.each(invalidEmails())("contactEmail_속성이_올바르게_지정되지_않으면_400_Bad_Request_상태코드를_반환한다", async(contactEmail: string) => {
+    // Arrange
+    const command: CreateSellerCommand = {
+      email: generateEmail(),
+      username: generateUsername(),
+      password: generatePassword(),
+      contactEmail,
+    };
+
+    // Act
+    const response = await request(app.getHttpServer())
+      .post("/seller/signUp")
+      .send(command);
+
+    // Assert
+    expect(response.status)
+      .toBe(HttpStatus.BAD_REQUEST);
   });
 });

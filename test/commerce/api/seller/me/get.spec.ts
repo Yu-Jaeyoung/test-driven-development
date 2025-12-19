@@ -9,6 +9,7 @@ import { HttpStatus, INestApplication } from "@nestjs/common";
 import type { CreateSellerCommand } from "@src/commerce/command/create-seller-command";
 import type { IssueSellerToken } from "@src/commerce/query/issue-seller-token";
 import { SellerMeView } from "@src/commerce/view/seller-me-view";
+import { TestFixture } from "@test/commerce/api/test-fixture";
 
 const { generateEmail } = EmailGenerator;
 const { generateUsername } = UsernameGenerator;
@@ -16,6 +17,7 @@ const { generatePassword } = PasswordGenerator;
 
 describe("GET /seller/me", () => {
   let app: INestApplication;
+  let fixture: TestFixture;
 
   beforeAll(async() => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -24,7 +26,7 @@ describe("GET /seller/me", () => {
                                                    .compile();
 
     app = moduleFixture.createNestApplication();
-
+    fixture = new TestFixture(app);
     await app.init();
   });
 
@@ -234,5 +236,34 @@ describe("GET /seller/me", () => {
 
     expect(actual.username)
       .toEqual(username);
+  });
+
+  it("문의_이메일_주소를_올바르게_설정한다", async() => {
+    // Arrange
+    const email = generateEmail();
+    const username = generateUsername();
+    const password = generatePassword();
+    const contactEmail = generateEmail();
+
+    await fixture.createSeller(email, username, password, contactEmail);
+
+    // Act
+    const token = await fixture.issueSellerToken(email, password);
+
+    const response = await request(app.getHttpServer())
+      .get("/seller/me")
+      .set("Authorization", `Bearer ${ token }`)
+      .send();
+
+    // Assert
+    const actual: SellerMeView = {
+      ...response.body,
+    };
+
+    expect(actual)
+      .toBeDefined();
+
+    expect(actual.contactEmail)
+      .toEqual(contactEmail);
   });
 });

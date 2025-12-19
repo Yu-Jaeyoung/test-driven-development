@@ -108,20 +108,22 @@ export class TestFixture {
   async createSellerThenSetAsDefaultUser() {
     const email = generateEmail();
     const password = generatePassword();
-    await this.createSeller(email, generateUsername(), password);
+    const contactEmail = generateEmail();
+    await this.createSeller(email, generateUsername(), password, contactEmail);
     await this.setSellerAsDefaultUser(email, password);
   }
 
-  async createSeller(
+  public async createSeller(
     email: string,
     username: string,
     password: string,
+    contactEmail: string,
   ) {
     const command: CreateSellerCommand = {
       email,
       username,
       password,
-      contactEmail: generateEmail(),
+      contactEmail,
     };
 
     this.ensureSuccessful(

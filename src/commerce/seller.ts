@@ -17,4 +17,7 @@ export class Seller {
 
   @Column({ length: 1000 })
   hashedPassword: string;
+
+  @Column({ length: 1000 })
+  contactEmail: string;
 }

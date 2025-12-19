@@ -250,4 +250,27 @@ describe("GET /shopper/products", () => {
     expect(actual.items.map(item => item.id))
       .toEqual(ids.reverse());
   });
+
+  it("문의_이메일_주소를_올바르게_설정한다", async() => {
+    // Arrange
+    await fixture.deleteAllProducts();
+
+    await fixture.createSellerThenSetAsDefaultUser();
+    const seller = await fixture.getSeller();
+    await fixture.registerProduct();
+
+    await fixture.createShopperThenSetAsDefaultUser();
+
+    // Act
+    const response = await fixture.client()
+                                  .get("/shopper/products");
+    // Assert
+    const actual = response.body.items[0].seller;
+
+    expect(actual)
+      .toBeDefined();
+
+    expect(actual.contactEmail)
+      .toBe(seller.body.contactEmail);
+  });
 });

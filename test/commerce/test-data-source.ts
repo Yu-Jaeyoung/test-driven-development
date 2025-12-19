@@ -8,3 +8,14 @@ export function invalidPassword() {
     "pass5678word",
   ];
 }
+
+export function invalidEmails() {
+  return [
+    null,
+    "invalid-email",
+    "invalid-email@",
+    "invalid-email@test",
+    "invalid-email@test.",
+    "invalid-email@.com",
+  ];
+}
