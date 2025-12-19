@@ -2,11 +2,9 @@ import { Body, Controller, Get, HttpStatus, Param, Post, Req, Res } from "@nestj
 import { Product } from "@src/commerce/product";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ArrayCarrier } from "@src/commerce/view/array-carrier";
 import { RegisterProductCommandExecutor } from "@src/commerce/commandmodel/register-product-command-executor";
 import type { Optional } from "@src/common/types";
 import { Consumer, Function } from "@src/common/types";
-import { ProductMapper } from "@src/commerce/querymodel/product-mapper";
 import { FindSellerProductQueryProcessor } from "@src/commerce/querymodel/find-seller-product-query-processor";
 import type { Response } from "express";
 import type { RegisterProductCommand } from "@src/commerce/command/register-product-command";

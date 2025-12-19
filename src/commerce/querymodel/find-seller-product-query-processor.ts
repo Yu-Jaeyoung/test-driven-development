@@ -1,6 +1,6 @@
 import { Product } from "@src/commerce/product";
-import { Function } from "@src/common/types";
 import type { Optional } from "@src/common/types";
+import { Function } from "@src/common/types";
 import { NotFoundException } from "@nestjs/common";
 import { ProductMapper } from "@src/commerce/querymodel/product-mapper";
 

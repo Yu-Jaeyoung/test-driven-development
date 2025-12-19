@@ -1,0 +1,3 @@
+interface GetProductPage {
+  continuationToken?: string;
+}
