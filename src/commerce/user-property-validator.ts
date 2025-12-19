@@ -9,6 +9,21 @@ export function isUsernameValid(username: string | undefined): boolean {
   return username !== undefined && USER_NAME_REGEX.test(username);
 }
 
+
 export function isPasswordValid(password: string | undefined): boolean {
-  return password !== undefined && password.length >= 8;
+  return password !== undefined
+    && password.length >= 8
+    && contains4SequentialDigits(password) === false;
+}
+
+function contains4SequentialDigits(s: string) {
+  for (let i = 0; i < s.length - 3; i++) {
+    if (s.charCodeAt(i) + 1 === s.charCodeAt(i + 1)
+      && s.charCodeAt(i + 1) + 1 === s.charCodeAt(i + 2)
+      && s.charCodeAt(i + 2) + 1 === s.charCodeAt(i + 3)) {
+      return true;
+    }
+  }
+
+  return false;
 }
