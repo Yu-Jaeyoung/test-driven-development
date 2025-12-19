@@ -181,7 +181,6 @@ describe("GET /shopper/products", () => {
     await fixture.createShopperThenSetAsDefaultUser();
 
     const token = await fixture.consumeProductPage();
-    console.info(`=================>> continuationToken: ${token}`);
 
     // Act
     const response = await fixture.client()

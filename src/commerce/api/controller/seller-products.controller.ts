@@ -1,12 +1,16 @@
-import type { Response } from "express";
 import { Body, Controller, Get, HttpStatus, Param, Post, Req, Res } from "@nestjs/common";
-import type { RegisterProductCommand } from "@src/commerce/command/register-product-command";
 import { Product } from "@src/commerce/product";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ArrayCarrier } from "@src/commerce/view/array-carrier";
 import { RegisterProductCommandExecutor } from "@src/commerce/commandmodel/register-product-command-executor";
-import type { Consumer } from "@src/common/types";
+import type { Optional } from "@src/common/types";
+import { Consumer, Function } from "@src/common/types";
+import { ProductMapper } from "@src/commerce/querymodel/product-mapper";
+import { FindSellerProductQueryProcessor } from "@src/commerce/querymodel/find-seller-product-query-processor";
+import type { Response } from "express";
+import type { RegisterProductCommand } from "@src/commerce/command/register-product-command";
+import { GetSellerProductsQueryProcessor } from "@src/commerce/querymodel/get-seller-products-query-processor";
 
 @Controller("/seller")
 export class SellerProductsController {
@@ -26,7 +30,7 @@ export class SellerProductsController {
   ) {
     const id = crypto.randomUUID();
     const sellerId = req.user.sub;
-    const saveProduct: Consumer<Product> = async(product) => await this.productRepository.save(product);
+    const saveProduct = new Consumer<Product>(async(product) => await this.productRepository.save(product));
 
     const executor = new RegisterProductCommandExecutor(saveProduct);
     await executor.execute(id, sellerId, command);
@@ -47,32 +51,30 @@ export class SellerProductsController {
     @Param("id")
     id: string,
   ) {
-    const product = await this.productRepository.findOneBy({
-      id,
-      sellerId: req.user.sub,
-    });
+    const sellerId = req.user.sub;
+    const productId = id;
 
-    if (!product) {
-      return res.status(HttpStatus.NOT_FOUND)
-                .send();
-    }
+    const findProduct = new Function<FindSellerProduct, Optional<Product>>(
+      async(query: FindSellerProduct) => await (await this.productRepository.findOneBy(
+        {
+          id: query.productId,
+          sellerId: query.sellerId,
+        },
+      )) as Optional<Product>,
+    );
 
-    const sellerProductView: SellerProductView = this.convertToView(product);
+    const processor = new FindSellerProductQueryProcessor(findProduct);
+    const query: FindSellerProduct = { sellerId, productId };
 
-    return res.status(HttpStatus.OK)
-              .send(sellerProductView);
-  }
-
-  private convertToView(product: Product) {
-    return {
-      id: product.id,
-      name: product.name,
-      imageUri: product.imageUri,
-      description: product.description,
-      priceAmount: product.priceAmount.toString(),
-      stockQuantity: product.stockQuantity,
-      registeredTimeUtc: product.registeredTimeUtc,
-    };
+    await processor.process(query)
+                   .then(
+                     (productView) => res.status(HttpStatus.OK)
+                                         .send(productView),
+                   )
+                   .catch(
+                     () => res.status(HttpStatus.NOT_FOUND)
+                              .send(),
+                   );
   }
 
   @Get("/products")
@@ -82,22 +84,27 @@ export class SellerProductsController {
     @Res()
     res: Response,
   ) {
-    const products = await this.productRepository.findBy(
-      {
-        sellerId: req.user.sub,
-      },
+    const sellerId = req.user.sub;
+
+    const getProductsOfSeller = new Function<GetSellerProducts, Optional<Product[]>>(
+      async(query: GetSellerProducts) => await (await this.productRepository.findBy(
+        {
+          sellerId: query.sellerId,
+        },
+      )) as Optional<Product[]>,
     );
 
-    products.sort((
-      productA,
-      productB,
-    ) => productB.registeredTimeUtc.getTime() - productA.registeredTimeUtc.getTime());
+    const processor = new GetSellerProductsQueryProcessor(getProductsOfSeller);
+    const query: GetSellerProducts = { sellerId };
 
-    const carrier: ArrayCarrier<SellerProductView> = {
-      items: products.map((product) => this.convertToView(product)),
-    };
-
-    return res.status(HttpStatus.OK)
-              .send(carrier);
+    await processor.process(query)
+                   .then(
+                     (productView) => res.status(HttpStatus.OK)
+                                         .send(productView),
+                   )
+                   .catch(
+                     () => res.status(HttpStatus.NOT_FOUND)
+                              .send(),
+                   );
   }
 }

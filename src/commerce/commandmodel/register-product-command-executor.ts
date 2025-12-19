@@ -17,7 +17,7 @@ export class RegisterProductCommandExecutor {
     this.validateCommand(command);
     const product = this.createProduct(command, productId, sellerId);
 
-    await this.saveProduct(product);
+    await this.saveProduct.accept(product);
   }
 
   private validateCommand(command: RegisterProductCommand) {
