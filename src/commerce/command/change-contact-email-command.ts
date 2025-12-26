@@ -1,0 +1,3 @@
+interface ChangeContactEmailCommand {
+  contactEmail: string;
+}
